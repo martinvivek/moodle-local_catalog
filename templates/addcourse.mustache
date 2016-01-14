@@ -1,0 +1,27 @@
+{{{header}}}
+{{{heading}}}
+
+	{{#has_courses}}
+		<table class="table table-striped">
+			<tr>
+				<th></th>
+				<th>{{#str}}name{{/str}}</th>
+			</tr>
+			{{#courselist}}
+				<tr>
+					<td>
+						<a href="{{{url}}}?action=editcourse&id={{id}}">{{{editicon}}}</a>
+						{{#candelete}}
+							&nbsp;<a href="{{{url}}}?action=deletecourse&id={{id}}&sesskey={{{sesskey}}}">{{{deleteicon}}}
+						{{/candelete}}
+					</td>
+					<td>{{name}}</td>
+				</tr>
+			{{/courselist}}
+		</table>
+
+	{{/has_courses}}
+
+	{{{addform}}}
+
+{{{footer}}}

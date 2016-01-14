@@ -75,3 +75,41 @@ function local_catalog_get_metadata_categories(){
 	return $entries;
 
 }
+
+//Courses
+function local_catalog_get_courses(){
+	global $DB;
+	$i=0;
+
+	$metadata_list = $DB->get_records('local_catalog_course_meta',null,'sequence');
+	$i=0;
+	foreach($metadata_list as $m){
+		$metadata[$m->id][$i]['metadata_id'] = $m->metadata_id;
+		$metadata[$m->id][$i]['value'] = $m->value;
+		$metadata[$m->id][$i]['url'] = $m->url;
+		$metadata[$m->id][$i]['sequence'] = $m->sequence;
+		$i++;
+	}
+
+	$entry_list = $DB->get_records('local_catalog', null, 'name');
+	foreach($entry_list as $e){
+		$entries[$i]['id'] = $e->id;
+		$entries[$i]['name'] = $e->name;
+		$entries[$i]['preview_video_id'] = $e->preview_video_id;
+		$entries[$i]['description'] = $e->description;
+		$entries[$i]['thumbnail'] = $e->thumbnail;
+		$entries[$i]['multi_course_label'] = $e->multi_course_label;
+		$entries[$i]['enrol_course_id'] = $e->enrol_course_id;
+		$entries[$i]['enrol_open'] = $e->enrol_open;
+		if(isset($metadata[$e->id]))$entries[$i]['metadata'] = $metadata[$e->id];
+		$i++;
+	}
+	return $entries;
+
+}
+
+function local_catalog_add_course($data) {
+    global $DB;
+    $id = $DB->insert_record('local_catalog', $data);
+    return $id;
+}

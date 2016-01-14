@@ -63,3 +63,31 @@ class local_catalog_metadata extends moodleform{
                 $this->add_action_buttons();
 	}
 }
+
+
+class local_catalog_addcourse extends moodleform{
+        public function definition(){
+                global $CFG;
+                $mform = $this->_form; // Don't forget the underscore! 
+
+                if (isset($this->_customdata['record']) && is_object($this->_customdata['record'])) {
+                        $data = $this->_customdata['record'];
+                }
+        
+                //resourceItem: ID (readonly, hidden)
+                $mform->addElement('hidden', 'id');
+                $mform->setType('id', PARAM_INT);
+                        
+                        //resourceItem: Title
+                $mform->addElement('text', 'name', get_string('name'), array('style'=>'width: 100%')); // Add elements to your form
+                $mform->setType('name', PARAM_TEXT);                   //Set type of element
+                $mform->addRule('name', get_string('required'), 'required', null, 'client');
+                $mform->addRule('name', get_string('maximumchars', '', 64), 'maxlength', 64, 'client');
+
+                if (isset($data)) {
+                        $this->set_data($data);
+                }
+                
+                $this->add_action_buttons();
+        }
+}

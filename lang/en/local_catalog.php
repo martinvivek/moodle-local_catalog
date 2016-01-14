@@ -35,3 +35,5 @@ $string['metadatasetup'] = "Set Up Metadata Categories";
 $string['edit_metadata_entry'] = "Edit Metadata Entry";
 $string['datatype'] = "Data Type";
 $string['fa-icon'] = "Font Awesome Icon Code";
+
+$string['coursesetup'] = "Course Setup";
