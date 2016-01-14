@@ -1,0 +1,32 @@
+{{{header}}}
+{{{heading}}}
+
+	<h3>{{#str}}metadatasetup, local_catalog{{/str}}</h3>
+	{{#has_metadata}}
+		<table class="table table-striped">
+			<tr>
+				<th></th>
+				<th>{{#str}}name{{/str}}</th>
+				<th>{{#str}}datatype, local_catalog{{/str}}</th>
+				<th>{{#str}}fa-icon, local_catalog{{/str}}</th>
+			</tr>
+			{{#metadata}}
+				<tr>
+					<td>
+						<a href="{{{url}}}?action=editmeta&id={{id}}">{{{editicon}}}</a>
+						{{#candelete}}
+							&nbsp;<a href="{{{url}}}?action=deletemeta&id={{id}}&sesskey={{{sesskey}}}">{{{deleteicon}}}
+						{{/candelete}}
+					</td>
+					<td>{{name}}</td>
+					<td>{{datatype}}</td>
+					<td>{{fa_icon}}&nbsp;<i class="fa fa-{{fa_icon}}"></i></td>
+				</tr>
+			{{/metadata}}
+		</table>
+
+	{{/has_metadata}}
+
+	{{{metaform}}}
+
+{{{footer}}}
