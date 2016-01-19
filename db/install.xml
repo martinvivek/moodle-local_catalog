@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/catalog/db" VERSION="20160114" COMMENT="XMLDB file for Moodle local/catalog"
+<XMLDB PATH="local/catalog/db" VERSION="20160119" COMMENT="XMLDB file for Moodle local/catalog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -82,6 +82,42 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="metadata_id" TYPE="foreign" FIELDS="metadata_id" REFTABLE="local_catalog_metadata" REFFIELDS="id"/>
         <KEY NAME="catalog_id" TYPE="foreign" FIELDS="catalog_id" REFTABLE="local_catalog" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="local_catalog_course_mcs" COMMENT="Course Microcredentials">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="catalog_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="section_id" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_catalog_id" TYPE="foreign" FIELDS="catalog_id" REFTABLE="local_catalog" REFFIELDS="id"/>
+        <KEY NAME="fk_section_id" TYPE="foreign" FIELDS="section_id" REFTABLE="course_sections" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="local_catalog_pages" COMMENT="Course static pages">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="fa_icon" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="template" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="local_catalog_course_pages" COMMENT="Default comment for the table, please edit me">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="catalog_id" TYPE="number" LENGTH="10" NOTNULL="false" SEQUENCE="false" DECIMALS="0"/>
+        <FIELD NAME="page_id" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="content" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="fk_catalog_id" TYPE="foreign" FIELDS="catalog_id" REFTABLE="local_catalog" REFFIELDS="id"/>
+        <KEY NAME="fk_page_id" TYPE="foreign" FIELDS="page_id" REFTABLE="local_catalog_pages" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
   </TABLES>

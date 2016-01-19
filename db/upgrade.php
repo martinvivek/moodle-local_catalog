@@ -81,6 +81,70 @@ function xmldb_local_catalog_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2016011400, 'local', 'catalog');
     }
 
+    if ($oldversion < 2016011900) {
+
+        // Define table local_catalog_course_mcs to be created.
+        $table = new xmldb_table('local_catalog_course_mcs');
+
+        // Adding fields to table local_catalog_course_mcs.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('catalog_id', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('section_id', XMLDB_TYPE_CHAR, '10', null, null, null, null);
+
+        // Adding keys to table local_catalog_course_mcs.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('fk_catalog_id', XMLDB_KEY_FOREIGN, array('catalog_id'), 'local_catalog', array('id'));
+        $table->add_key('fk_section_id', XMLDB_KEY_FOREIGN, array('section_id'), 'course_sections', array('id'));
+
+        // Conditionally launch create table for local_catalog_course_mcs.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+
+        // Define table local_catalog_pages to be created.
+        $table = new xmldb_table('local_catalog_pages');
+
+        // Adding fields to table local_catalog_pages.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('name', XMLDB_TYPE_CHAR, '32', null, null, null, null);
+        $table->add_field('fa_icon', XMLDB_TYPE_CHAR, '32', null, null, null, null);
+        $table->add_field('template', XMLDB_TYPE_TEXT, null, null, null, null, null);
+
+        // Adding keys to table local_catalog_pages.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Conditionally launch create table for local_catalog_pages.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+
+        // Define table local_catalog_course_pages to be created.
+        $table = new xmldb_table('local_catalog_course_pages');
+
+        // Adding fields to table local_catalog_course_pages.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('catalog_id', XMLDB_TYPE_NUMBER, '10', null, null, null, null);
+        $table->add_field('page_id', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('content', XMLDB_TYPE_TEXT, null, null, null, null, null);
+
+        // Adding keys to table local_catalog_course_pages.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('fk_catalog_id', XMLDB_KEY_FOREIGN, array('catalog_id'), 'local_catalog', array('id'));
+        $table->add_key('fk_page_id', XMLDB_KEY_FOREIGN, array('page_id'), 'local_catalog_pages', array('id'));
+
+        // Conditionally launch create table for local_catalog_course_pages.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+
+
+        // Catalog savepoint reached.
+        upgrade_plugin_savepoint(true, 2016011900, 'local', 'catalog');
+    }
+
      
      
     /*
