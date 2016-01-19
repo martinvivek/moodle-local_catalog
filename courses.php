@@ -42,7 +42,11 @@ $PAGE->set_pagelayout('admin');
 //actions list
 $actionIndex = 'index';
 $addcourse = 'addcourse';
+$editcourse = 'editcourse';
+$saveedits = 'saveedits';
+$deletecourse = 'deletecourse';
 $displayindex = true;
+$displayedit = false;
 
 $action = optional_param('action', 0, PARAM_TEXT);
 $action = (!empty($action) ? $action : 'index');
@@ -55,8 +59,19 @@ if($action=="addcourse"){
 		}
 		unset($addform);
 		unset($_POST);
+		$displayindex = true;
 }
 
+if($action == $deletecourse){
+	$del_id = required_param('id', PARAM_INT);
+	local_catalog_delete_course($del_id);
+	$displayindex = true;
+}
+
+if($action == $editcourse){
+	$displayindex = false;
+	$displayedit = true;
+}
 
 if($displayindex){
 		$data = new stdClass();
@@ -74,6 +89,27 @@ if($displayindex){
         $data->heading =  $OUTPUT->heading(get_string('coursesetup', 'local_catalog'));
         $data->footer = $OUTPUT->footer();
 		echo $OUTPUT->render_from_template('local_catalog/addcourse', $data);
+}
+
+if($displayedit){
+		$id = required_param('id', PARAM_INT);
+
+		$record = $DB->get_record('local_catalog',array('id'=>$id), '*', MUST_EXIST);
+		$editform = new local_catalog_editcourse(new moodle_url($returnurl, array('action' => $saveedits, 'id'=>$id)), array('record'=>$record));
+
+		$data = new stdClass();
+		$data->url = new moodle_url($returnurl);
+		$data->sesskey=sesskey();
+		$data->deleteicon = html_writer::empty_tag('img', array('src'=>$OUTPUT->pix_url('t/delete'), 'alt'=>get_string('delete'), 'class'=>'iconsmall'));
+		$data->editicon = html_writer::empty_tag('img', array('src'=>$OUTPUT->pix_url('i/edit'), 'alt'=>get_string('edit'), 'class'=>'iconsmall'));
+		$course = get_course_detail($id);
+		$PAGE->set_title($course['name']);
+		$PAGE->navbar->add($course['name'], null, global_navigation::TYPE_CUSTOM);
+        $data->header = $OUTPUT->header();
+        $data->heading =  $OUTPUT->heading($course['name']);
+        $data->footer = $OUTPUT->footer();
+        $data->editform = $editform->render();
+		echo $OUTPUT->render_from_template('local_catalog/editcourse', $data);
 }
 
 ?>

@@ -35,5 +35,11 @@ $string['metadatasetup'] = "Set Up Metadata Categories";
 $string['edit_metadata_entry'] = "Edit Metadata Entry";
 $string['datatype'] = "Data Type";
 $string['fa-icon'] = "Font Awesome Icon Code";
+$string['youtube_id_preview_video'] = 'YouTube ID of Preview Video';
+$string['label_mutliple_courses'] = "Label for multiple course editions";
+$string['previous_courses'] = "Previous Courses";
+$string['enrol_open'] = "Open for Enrollment";
+$string['enrolment_course'] = "Course/Enrollment";
+
 
 $string['coursesetup'] = "Course Setup";

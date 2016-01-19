@@ -77,10 +77,41 @@ function local_catalog_get_metadata_categories(){
 }
 
 //Courses
+function get_course_detail($id){
+	global $DB;
+
+	$metadata = array();
+	$metadata_list = $DB->get_records('local_catalog_course_meta',array('catalog_id'=>$id),'sequence');
+	$i=0;
+	foreach($metadata_list as $m){
+		$metadata[$i]['metadata_id'] = $m->metadata_id;
+		$metadata[$i]['value'] = $m->value;
+		$metadata[$i]['url'] = $m->url;
+		$metadata[$i]['sequence'] = $m->sequence;
+		$i++;
+	}
+
+	$course = array();
+	$e = $DB->get_record('local_catalog', array('id'=>$id), '*', MUST_EXIST);
+		$course['id'] = $e->id;
+		$course['name'] = $e->name;
+		$course['preview_video_id'] = $e->preview_video_id;
+		$course['description'] = $e->description;
+		$course['thumbnail'] = $e->thumbnail;
+		$course['multi_course_label'] = $e->multi_course_label;
+		$course['enrol_course_id'] = $e->enrol_course_id;
+		$course['enrol_open'] = $e->enrol_open;
+		$course['metadata'] = $metadata;
+	return $course;
+
+}
+
+
 function local_catalog_get_courses(){
 	global $DB;
 	$i=0;
 
+	$metadata = array();
 	$metadata_list = $DB->get_records('local_catalog_course_meta',null,'sequence');
 	$i=0;
 	foreach($metadata_list as $m){
@@ -91,6 +122,7 @@ function local_catalog_get_courses(){
 		$i++;
 	}
 
+	$entries = array();
 	$entry_list = $DB->get_records('local_catalog', null, 'name');
 	foreach($entry_list as $e){
 		$entries[$i]['id'] = $e->id;
@@ -112,4 +144,25 @@ function local_catalog_add_course($data) {
     global $DB;
     $id = $DB->insert_record('local_catalog', $data);
     return $id;
+}
+
+function local_catalog_delete_course($id){
+	global $DB;
+	$DB->delete_records('local_catalog_course_meta', array('catalog_id'=>$id));
+	$DB->delete_records('local_catalog_section_course', array('catalog_id'=>$id));
+	$DB->delete_records('local_catalog_allcourses', array('catalog_id'=>$id));
+	$DB->delete_records('local_catalog', array('id'=>$id));
+	return;
+}
+
+function local_catalog_get_all_enrolments(){
+	global $DB;
+	$enrol_list = $DB->get_records_sql("SELECT e.id as id, e.enrol as enroltype, e.name as enrolname,c.fullname as course FROM {enrol} e, {course} c WHERE c.id=e.courseid ORDER BY c.fullname, e.enrol, e.name");
+	$e = array();
+	foreach($enrol_list as $i){
+		$e[$i->id] = $i->course;
+		if(strlen($i->enrolname)==0)$e[$i->id].=": ".$i->enroltype;
+		else $e[$i->id].=": ".$i->enrolname." (".$i->enroltype.")";
+	}
+	return $e;
 }

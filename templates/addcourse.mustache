@@ -11,9 +11,7 @@
 				<tr>
 					<td>
 						<a href="{{{url}}}?action=editcourse&id={{id}}">{{{editicon}}}</a>
-						{{#candelete}}
-							&nbsp;<a href="{{{url}}}?action=deletecourse&id={{id}}&sesskey={{{sesskey}}}">{{{deleteicon}}}
-						{{/candelete}}
+							&nbsp;<a href="{{{url}}}?action=deletecourse&id={{id}}&sesskey={{{sesskey}}}" onClick="return confirm('Are you sure you want to delete this course?');">{{{deleteicon}}}</a>
 					</td>
 					<td>{{name}}</td>
 				</tr>
