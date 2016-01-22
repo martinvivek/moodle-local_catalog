@@ -44,6 +44,9 @@ $actionIndex = 'index';
 $addmeta = 'addmeta';
 $editmeta = 'editmeta';
 $deletemeta = 'deletemeta';
+$addpages = 'addpages';
+$editpages = 'editpages';
+$deletepages = 'deletepages';
 $action = optional_param('action', 0, PARAM_TEXT);
 $action = (!empty($action) ? $action : 'index');
 if($action=="index")$displaypage = true;
@@ -90,6 +93,51 @@ if($action==$editmeta){
 		}
 }
 
+if($action==$addpages){
+		$template_form = new local_catalog_pages(new moodle_url($returnurl, array('action' => $addpages)));
+		if($formdata = $template_form->get_data()){
+			$formdata->template = $formdata->template['text'];
+			$inserted_id = local_catalog_add_page($formdata);
+            $success = isset($inserted_id);
+		}
+		unset($template_form);
+		unset($_POST);
+		$displaypage=true;
+}
+
+if($action==$editpages){
+		$id = required_param('id',PARAM_INT);
+		$record = $DB->get_record('local_catalog_pages',array('id'=>$id), '*', MUST_EXIST);
+		$editform = new local_catalog_pages(new moodle_url($returnurl, array('action' => $editpages, 'id'=>$id)), array('record'=>$record));
+		if($formdata = $editform->get_data()){
+			$formdata->template = $formdata->template['text'];
+			$success = local_catalog_edit_page($formdata);
+		}
+		if ((isset($success)&&$success)||$editform->is_cancelled()){  //call create Resource Type function
+			unset($metaform);
+			unset($_POST);
+            $displaypage=true;
+        }
+        else{
+        	$data = new stdClass();
+        	$PAGE->navbar->add(get_string('edit_page','local_catalog'));
+	        $data->header = $OUTPUT->header();
+	        $data->heading =  $OUTPUT->heading(get_string('edit_page', 'local_catalog'));
+			$data->form = $editform->render();
+	        $data->footer = $OUTPUT->footer();
+			echo $OUTPUT->render_from_template('local_catalog/displayform', $data);
+		}
+}
+
+
+if($action==$deletepages){
+	$del_id = required_param('id', PARAM_INT);
+	local_catalog_delete_page($del_id);
+	$displaypage = true;
+}
+
+
+
 if($displaypage){
 		$data = new stdClass();
 		$data->url = new moodle_url($returnurl);
@@ -105,6 +153,15 @@ if($displaypage){
 		}
 
 		$data->metaform = $metaform->render();
+
+		$data->pages = local_catalog_get_pages();
+		if(count($data->pages)>0)$data->has_pages = true;
+		foreach($data->pages as $key=>$elem){
+			if($elem['count']=="0")$data->pages[$key]['candelete'] = "true";
+		}
+
+		$template_form = new local_catalog_pages(new moodle_url($returnurl, array('action' => $addpages)));
+		$data->template_form = $template_form->render();
 
         $data->header = $OUTPUT->header();
         $data->heading =  $OUTPUT->heading(get_string('catalogsetup', 'local_catalog'));

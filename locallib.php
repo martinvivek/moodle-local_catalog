@@ -76,6 +76,46 @@ function local_catalog_get_metadata_categories(){
 
 }
 
+
+//Course pages
+function local_catalog_add_page($data) {
+    global $DB;
+    $id = $DB->insert_record('local_catalog_pages', $data);
+    return $id;
+}
+
+function local_catalog_edit_page($data){
+	global $DB;
+	return $DB->update_record('local_catalog_pages', $data);
+}
+
+function local_catalog_delete_page($id) {
+    global $DB;
+    $count = $DB->count_records('local_catalog_course_pages', array('page_id'=>$id));
+    if($count>0)return false;
+    $result = $DB->delete_records('local_catalog_pages', array('id'=>$id));
+    return $result;
+}
+
+function local_catalog_get_pages(){
+	global $DB;
+	$entry_list = $DB->get_records('local_catalog_pages', null, 'name');
+
+	$entries = array();
+	$i=0;
+	foreach($entry_list as $e){
+		$entries[$i]['id'] = $e->id;
+		$entries[$i]['name'] = $e->name;
+		$entries[$i]['fa_icon'] = $e->fa_icon;
+		$entries[$i]['template'] = $e->template;
+		$entries[$i]['count'] = $DB->count_records('local_catalog_course_pages', array('page_id'=>$e->id));
+		$i++;
+	}
+	return $entries;
+
+}
+
+
 //Courses
 function get_course_detail($id){
 	global $DB;

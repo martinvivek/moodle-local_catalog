@@ -29,4 +29,32 @@
 
 	{{{metaform}}}
 
+	<hr/>
+
+	<h3>{{#str}}coursepagesetup, local_catalog{{/str}}</h3>
+
+		{{#has_pages}}
+		<table class="table table-striped">
+			<tr>
+				<th></th>
+				<th>{{#str}}name{{/str}}</th>
+				<th>{{#str}}fa-icon, local_catalog{{/str}}</th>
+			</tr>
+			{{#pages}}
+				<tr>
+					<td>
+						<a href="{{{url}}}?action=editpages&id={{id}}">{{{editicon}}}</a>
+						{{#candelete}}
+							&nbsp;<a href="{{{url}}}?action=deletepages&id={{id}}&sesskey={{{sesskey}}}">{{{deleteicon}}}</a>
+						{{/candelete}}
+					</td>
+					<td>{{name}}</td>
+					<td>{{fa_icon}}&nbsp;<i class="fa fa-{{fa_icon}}"></i></td>
+				</tr>
+			{{/pages}}
+		</table>
+
+	{{/has_pages}}
+	{{{template_form}}}
+
 {{{footer}}}

@@ -65,6 +65,40 @@ class local_catalog_metadata extends moodleform{
 	}
 }
 
+class local_catalog_pages extends moodleform{
+        public function definition(){
+                global $CFG;
+                $mform = $this->_form; // Don't forget the underscore! 
+
+                if (isset($this->_customdata['record']) && is_object($this->_customdata['record'])) {
+                        $data = $this->_customdata['record'];
+                }
+        
+                //resourceItem: ID (readonly, hidden)
+                $mform->addElement('hidden', 'id');
+                $mform->setType('id', PARAM_INT);
+                        
+                        //resourceItem: Title
+                $mform->addElement('text', 'name', get_string('name'), array('style'=>'width: 100%')); // Add elements to your form
+                $mform->setType('name', PARAM_TEXT);                   //Set type of element
+                $mform->addRule('name', get_string('required'), 'required', null, 'client');
+                $mform->addRule('name', get_string('maximumchars', '', 64), 'maxlength', 64, 'client');
+
+                $mform->addElement('text', 'fa_icon', get_string('fa-icon','local_catalog'), array('style'=>'width: 100%')); // Add elements to your form
+                $mform->setType('fa_icon', PARAM_TEXT);                   //Set type of element
+                $mform->addRule('fa_icon', get_string('maximumchars', '', 32), 'maxlength', 32, 'client');
+
+                $template = $mform->addElement('editor', 'template', get_string('template'));
+                $mform->setType('template', PARAM_RAW);
+
+                if (isset($data)) {
+                        $this->set_data($data);
+                        $template->setValue(array('text' => $data->template));
+                }
+                
+                $this->add_action_buttons();
+        }
+}
 
 class local_catalog_addcourse extends moodleform{
         public function definition(){
