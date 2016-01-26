@@ -65,39 +65,6 @@ class local_catalog_metadata extends moodleform{
 	}
 }
 
-class local_catalog_coursemeta extends moodleform{
-        public function definition(){
-                global $CFG;
-                $mform = $this->_form; // Don't forget the underscore! 
-
-                if (isset($this->_customdata['catalog_id']) && is_object($this->_customdata['catalog_id'])) {
-                        $data = $this->_customdata['catalog_id'];
-                }
-                
-                $metacategories = local_catalog_get_metadata_categories();
-
-                $catlist = array();
-                foreach($metacategories as $m){
-                        $catlist[$m['id']] = $m['name'];
-                }
-                $mform->addElement('select', 'metadata_id', get_string('entry'), $datatype,  array('style'=>'width: 100%'));
-                $mform->addRule('metadata_id', get_string('required'), 'required', null, 'client');
-
-                $mform->addElement('text', 'value', get_string('value'), array('style'=>'width: 100%')); // Add elements to your form
-                $mform->addRule('value', get_string('maximumchars', '', 128), 'maxlength', 128, 'client');
-
-                $mform->addElement('text', 'url', get_string('url'), array('style'=>'width: 100%')); // Add elements to your form
-                $mform->setType('url', PARAM_URL);                   //Set type of element
-                $mform->addRule('value', get_string('maximumchars', '', 128), 'maxlength', 128, 'client');
-
-                if (isset($data)) {
-                        $this->set_data($data);
-                }
-
-                $this->add_action_buttons();
-        }
-}
-
 
 class local_catalog_pages extends moodleform{
         public function definition(){
@@ -206,6 +173,39 @@ class local_catalog_editcourse extends moodleform{
                         $this->set_data($data);
                 }
                 
+                $this->add_action_buttons();
+        }
+}
+
+class local_catalog_coursemeta extends moodleform{
+        public function definition(){
+                global $CFG;
+                $mform = $this->_form; // Don't forget the underscore! 
+
+                if (isset($this->_customdata['catalog_id']) && is_object($this->_customdata['catalog_id'])) {
+                        $data = $this->_customdata['catalog_id'];
+                }
+                
+                $metacategories = local_catalog_get_metadata_categories();
+
+                $catlist = array();
+                foreach($metacategories as $m){
+                        $catlist[$m['id']] = $m['name'];
+                }
+                $mform->addElement('select', 'metadata_id', get_string('entry'), $datatype,  array('style'=>'width: 100%'));
+                $mform->addRule('metadata_id', get_string('required'), 'required', null, 'client');
+
+                $mform->addElement('text', 'value', get_string('value'), array('style'=>'width: 100%')); // Add elements to your form
+                $mform->addRule('value', get_string('maximumchars', '', 128), 'maxlength', 128, 'client');
+
+                $mform->addElement('text', 'url', get_string('url'), array('style'=>'width: 100%')); // Add elements to your form
+                $mform->setType('url', PARAM_URL);                   //Set type of element
+                $mform->addRule('value', get_string('maximumchars', '', 128), 'maxlength', 128, 'client');
+
+                if (isset($data)) {
+                        $this->set_data($data);
+                }
+
                 $this->add_action_buttons();
         }
 }
