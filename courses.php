@@ -45,6 +45,8 @@ $addcourse = 'addcourse';
 $editcourse = 'editcourse';
 $saveedits = 'saveedits';
 $deletecourse = 'deletecourse';
+
+$addmeta = "addmeta";
 $displayindex = true;
 $displayedit = false;
 
@@ -73,6 +75,22 @@ if($action == $editcourse){
 	$displayedit = true;
 }
 
+if($action==$saveedits){
+	$id = required_param('id', PARAM_INT);
+	$record = $DB->get_record('local_catalog',array('id'=>$id), '*', MUST_EXIST);
+
+		$record = $DB->get_record('local_catalog_metadata',array('id'=>$id), '*', MUST_EXIST);
+		$editform =  new local_catalog_editcourse(new moodle_url($returnurl, array('action' => $saveedits, 'id'=>$id)), array('record'=>$record));
+		if($formdata = $editform->get_data()){
+			$formdata->description = $formdata->description['text'];
+			$success = local_catalog_edit_course($formdata);
+			unset($record);
+		}
+
+	$displayindex = false;
+	$displayedit = true;
+}
+
 if($displayindex){
 		$data = new stdClass();
 		$data->url = new moodle_url($returnurl);
@@ -96,7 +114,7 @@ if($displayedit){
 
 		$record = $DB->get_record('local_catalog',array('id'=>$id), '*', MUST_EXIST);
 		$editform = new local_catalog_editcourse(new moodle_url($returnurl, array('action' => $saveedits, 'id'=>$id)), array('record'=>$record));
-
+		$metaform = new local_catalog_coursemeta(new moodle_url($returnurl, array('action' => $addmeta, 'id'=>$id)), array('catalog_id'=>$id));
 		$data = new stdClass();
 		$data->url = new moodle_url($returnurl);
 		$data->sesskey=sesskey();

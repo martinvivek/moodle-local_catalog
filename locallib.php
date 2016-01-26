@@ -186,6 +186,12 @@ function local_catalog_add_course($data) {
     return $id;
 }
 
+function local_catalog_edit_course($data){
+	global $DB;
+	return $DB->update_record('local_catalog', $data);
+}
+
+
 function local_catalog_delete_course($id){
 	global $DB;
 	$DB->delete_records('local_catalog_course_meta', array('catalog_id'=>$id));
