@@ -34,6 +34,7 @@ $string['catalogsetup'] = "Catalog Setup";
 $string['metadatasetup'] = "Set Up Metadata Categories";
 $string['coursepagesetup'] = "Set Up Course Pages";
 $string['edit_metadata_entry'] = "Edit Metadata Entry";
+$string['course_metadata'] = "Course Metadata";
 $string['edit_page'] = "Edit Page";
 $string['datatype'] = "Data Type";
 $string['fa-icon'] = "Font Awesome Icon Code";

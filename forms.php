@@ -192,15 +192,16 @@ class local_catalog_coursemeta extends moodleform{
                 foreach($metacategories as $m){
                         $catlist[$m['id']] = $m['name'];
                 }
-                $mform->addElement('select', 'metadata_id', get_string('entry'), $datatype,  array('style'=>'width: 100%'));
+                $mform->addElement('select', 'metadata_id', get_string('entry'), $catlist,  array('style'=>'width: 100%'));
                 $mform->addRule('metadata_id', get_string('required'), 'required', null, 'client');
 
                 $mform->addElement('text', 'value', get_string('value'), array('style'=>'width: 100%')); // Add elements to your form
                 $mform->addRule('value', get_string('maximumchars', '', 128), 'maxlength', 128, 'client');
+                $mform->addRule('value', get_string('required'), 'required', null, 'client');
 
                 $mform->addElement('text', 'url', get_string('url'), array('style'=>'width: 100%')); // Add elements to your form
                 $mform->setType('url', PARAM_URL);                   //Set type of element
-                $mform->addRule('value', get_string('maximumchars', '', 128), 'maxlength', 128, 'client');
+                $mform->addRule('url', get_string('maximumchars', '', 128), 'maxlength', 128, 'client');
 
                 if (isset($data)) {
                         $this->set_data($data);
@@ -208,5 +209,21 @@ class local_catalog_coursemeta extends moodleform{
 
                 $this->add_action_buttons();
         }
+
+        function validation($data, $files){
+                $errors = array();
+                $datatype = local_catalog_metadata_get_datatype($data['metadata_id']);
+                
+                if($datatype=="date")if(strtotime($data['value'])===false)$errors['value'] = get_string('invalid');
+                if($datatype=="numeric")if(!is_numeric($data['value']))$errors['value'] = get_string('invalid');
+                if($datatype=="list")if(count(explode($data['value'],';'))<2)$errors['value'] = get_string('invalid');
+
+                return $errors;
+        }
 }
 
+class local_catalog_editcourse_courses extends moodleform{
+        public function definition(){
+
+        }
+}

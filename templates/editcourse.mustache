@@ -3,4 +3,31 @@
 
 	{{{editform}}}
 
+	<h3>{{#str}}course_metadata, local_catalog{{/str}}</h3>
+	{{#hasmeta}}
+		<table class="table table-striped">
+			<tr>
+				<th></th>
+				<th>{{#str}}entry, local_catalog{{/str}}</th>
+				<th>{{#str}}value, local_catalog{{/str}}</th>
+				<th>{{#str}}url, local_catalog{{/str}}</th>
+			</tr>
+			{{#metadata}}
+				<tr>
+					<td>
+
+						<a href="{{{returnurl}}}?action=metadel&metaid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{deleteicon}}}</a>
+						{{^first}}<a href="{{{returnurl}}}?action=metaup&metaid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{upicon}}}</a>{{/first}}
+						{{^last}}<a href="{{{returnurl}}}?action=metadown&metaid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{downicon}}}</a>{{/last}}
+					
+					</td>
+					<td><i class="fa fa-{{fa_icon}}"></i>&nbsp;{{name}}</td>
+					<td>{{value}}</td>
+					<td><a href="{{url}}" target="_blank">{{url}}</a></td>
+				</tr>
+			{{/metadata}}
+		</table>
+	{{/hasmeta}}
+	{{{metaform}}}
+	
 {{{footer}}}

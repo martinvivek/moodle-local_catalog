@@ -66,6 +66,7 @@ if($action==$addmeta){
 
 if($action==$deletemeta){
 	$del_id = required_param('id', PARAM_INT);
+	confirm_sesskey();
 	local_catalog_delete_metadata_category($del_id);
 	$displaypage = true;
 }

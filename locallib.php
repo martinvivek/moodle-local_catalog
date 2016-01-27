@@ -53,22 +53,29 @@ function local_catalog_delete_metadata_category($id) {
     return $result;
 }
 
+function local_catalog_metadata_get_datatype($id){
+	global $DB;
+	return $DB->get_field('local_catalog_metadata','datatype',array('id'=>$id), MUST_EXIST);
+}
+
 /**
 *	Get a list of all metadata categories
 *	@return array of all metadata records
 **/
-function local_catalog_get_metadata_categories(){
+function local_catalog_get_metadata_categories($key="SEQUENTIAL"){
 	global $DB;
 	$entry_list = $DB->get_records('local_catalog_metadata', null, 'name');
 
 	$entries = array();
 	$i=0;
 	foreach($entry_list as $e){
-		$entries[$i]['id'] = $e->id;
-		$entries[$i]['name'] = $e->name;
-		$entries[$i]['fa_icon'] = $e->fa_icon;
-		$entries[$i]['datatype'] = $e->datatype;
-		$entries[$i]['count'] = $DB->count_records('local_catalog_course_meta', array('metadata_id'=>$e->id));
+		if($key=="ID") $key = $e->id;
+		else $key = $i;
+		$entries[$key]['id'] = $e->id;
+		$entries[$key]['name'] = $e->name;
+		$entries[$key]['fa_icon'] = $e->fa_icon;
+		$entries[$key]['datatype'] = $e->datatype;
+		$entries[$key]['count'] = $DB->count_records('local_catalog_course_meta', array('metadata_id'=>$e->id));
 		$i++;
 
 	}
@@ -76,6 +83,75 @@ function local_catalog_get_metadata_categories(){
 
 }
 
+function local_catalog_add_course_metadata($data){
+	   global $DB;
+	$data->sequence = $DB->count_records('local_catalog_course_meta', array('catalog_id'=>$data->catalog_id))+1;
+    $id = $DB->insert_record('local_catalog_course_meta', $data);
+    return $id;
+}
+
+function local_catalog_delete_course_metadata($id, $catalog_id){
+	global $DB;
+    $result = $DB->delete_records('local_catalog_course_meta', array('id'=>$id, 'catalog_id'=>$catalog_id));
+    if($result==false)return $result;
+
+    $meta = $DB->get_records('local_catalog_course_meta', array('catalog_id'=>$catalog_id), 'sequence');
+    $i=1;
+    foreach($meta as $m){
+    	$obj = new StdClass();
+    	$obj->id = $m->id;
+    	$obj->sequence = $i;
+    	$DB->update_record('local_catalog_course_meta',$obj);
+    	unset($obj);
+    	$i++;
+    }
+    return;
+}
+
+function local_catalog_move_course_metadata($direction, $id, $catalog_id){
+	global $DB;
+	$direction = strtolower($direction);
+	if($direction!="down"&&$direction!="up")return false;
+
+	$sequence = $DB->get_field('local_catalog_course_meta','sequence',array('id'=>$id), MUST_EXIST);	
+
+	if($direction=="up") $newseq = $sequence - 1;
+	if($direction=="down")$newseq = $sequence + 1;
+	$switch = $DB->get_field('local_catalog_course_meta','id',array('catalog_id'=>$catalog_id, 'sequence'=>$newseq), MUST_EXIST);
+
+    $obj = new StdClass();
+	$obj->id = $id;
+	$obj->sequence = $newseq;
+	$DB->update_record('local_catalog_course_meta',$obj);
+
+    $obj = new StdClass();
+	$obj->id = $switch;
+	$obj->sequence = $sequence;
+	$DB->update_record('local_catalog_course_meta',$obj);
+
+}
+
+function local_catalog_get_course_metadata($catalog_id){
+	global $DB;
+	$cat = local_catalog_get_metadata_categories("ID");
+
+	$meta = $DB->get_records('local_catalog_course_meta', array('catalog_id'=>$catalog_id), 'sequence');
+	$entries = array();
+	$i=0;
+	foreach($meta as $m){
+		$key = $i;
+		$entries[$key]['id'] = $m->id;
+		$entries[$key]['name'] = $cat[$m->metadata_id]['name'];
+		$entries[$key]['fa_icon'] = $cat[$m->metadata_id]['fa_icon'];
+		$entries[$key]['datatype'] = $cat[$m->metadata_id]['datatype'];
+		$entries[$key]['url'] = $m->url;
+		$entries[$key]['value'] = $m->value;
+		if($cat[$m->metadata_id]['datatype']=="date")$entries[$key]['value'] = date("m/d/Y",$m->value);
+		if($cat[$m->metadata_id]['datatype']=="list")$entries[$key]['value']  = explode(";", $m->value);
+		$i++;
+	}
+	return $entries;
+}
 
 //Course pages
 function local_catalog_add_page($data) {
@@ -150,20 +226,9 @@ function get_course_detail($id){
 function local_catalog_get_courses(){
 	global $DB;
 	$i=0;
-
-	$metadata = array();
-	$metadata_list = $DB->get_records('local_catalog_course_meta',null,'sequence');
-	$i=0;
-	foreach($metadata_list as $m){
-		$metadata[$m->id][$i]['metadata_id'] = $m->metadata_id;
-		$metadata[$m->id][$i]['value'] = $m->value;
-		$metadata[$m->id][$i]['url'] = $m->url;
-		$metadata[$m->id][$i]['sequence'] = $m->sequence;
-		$i++;
-	}
-
 	$entries = array();
 	$entry_list = $DB->get_records('local_catalog', null, 'name');
+	$i=0;
 	foreach($entry_list as $e){
 		$entries[$i]['id'] = $e->id;
 		$entries[$i]['name'] = $e->name;

@@ -54,6 +54,7 @@ $action = optional_param('action', 0, PARAM_TEXT);
 $action = (!empty($action) ? $action : 'index');
 
 if($action=="addcourse"){
+		confirm_sesskey();
 		$addform = new local_catalog_addcourse(new moodle_url($returnurl, array('action' => $addcourse)));
 		if($formdata = $addform->get_data()){
 			$inserted_id = local_catalog_add_course($formdata);
@@ -66,6 +67,7 @@ if($action=="addcourse"){
 
 if($action == $deletecourse){
 	$del_id = required_param('id', PARAM_INT);
+	confirm_sesskey();
 	local_catalog_delete_course($del_id);
 	$displayindex = true;
 }
@@ -77,6 +79,7 @@ if($action == $editcourse){
 
 if($action==$saveedits){
 	$id = required_param('id', PARAM_INT);
+	confirm_sesskey();
 	$record = $DB->get_record('local_catalog',array('id'=>$id), '*', MUST_EXIST);
 
 		$record = $DB->get_record('local_catalog_metadata',array('id'=>$id), '*', MUST_EXIST);
@@ -91,9 +94,51 @@ if($action==$saveedits){
 	$displayedit = true;
 }
 
+if($action=="addmeta"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	confirm_sesskey();
+	$addform =  new local_catalog_coursemeta(new moodle_url($returnurl, array('action' => $addmeta, 'catalog_id'=>$catalog_id)), array('catalog_id'=>$catalog_id));
+	if($formdata = $addform->get_data()){
+		$formdata->catalog_id = $catalog_id;
+		$datatype = local_catalog_metadata_get_datatype($formdata->metadata_id);
+		if($datatype=="date")$formdata->value = strtotime($formdata->value);
+		local_catalog_add_course_metadata($formdata);
+	}
+	$displayindex = false;
+	$displayedit = true;
+}
+
+if($action=="metadel"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	$metaid = required_param('metaid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_delete_course_metadata($metaid, $catalog_id);
+	$displayindex = false;
+	$displayedit = true;
+}
+
+if($action=="metadown"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	$metaid = required_param('metaid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_move_course_metadata("down", $metaid, $catalog_id);
+	$displayindex = false;
+	$displayedit = true;
+}
+
+if($action=="metaup"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	$metaid = required_param('metaid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_move_course_metadata("up", $metaid, $catalog_id);
+	$displayindex = false;
+	$displayedit = true;
+}
+
+
 if($displayindex){
 		$data = new stdClass();
-		$data->url = new moodle_url($returnurl);
+		$data->returnurl = new moodle_url($returnurl);
 		$data->sesskey=sesskey();
 		$data->deleteicon = html_writer::empty_tag('img', array('src'=>$OUTPUT->pix_url('t/delete'), 'alt'=>get_string('delete'), 'class'=>'iconsmall'));
 		$data->editicon = html_writer::empty_tag('img', array('src'=>$OUTPUT->pix_url('i/edit'), 'alt'=>get_string('edit'), 'class'=>'iconsmall'));
@@ -110,23 +155,34 @@ if($displayindex){
 }
 
 if($displayedit){
-		$id = required_param('id', PARAM_INT);
+		if(isset($catalog_id))$id = $catalog_id;
+		else $id = required_param('id', PARAM_INT);
 
 		$record = $DB->get_record('local_catalog',array('id'=>$id), '*', MUST_EXIST);
 		$editform = new local_catalog_editcourse(new moodle_url($returnurl, array('action' => $saveedits, 'id'=>$id)), array('record'=>$record));
-		$metaform = new local_catalog_coursemeta(new moodle_url($returnurl, array('action' => $addmeta, 'id'=>$id)), array('catalog_id'=>$id));
+
+		$metaform = new local_catalog_coursemeta(new moodle_url($returnurl, array('action' => $addmeta, 'catalog_id'=>$id)), array('catalog_id'=>$id));
 		$data = new stdClass();
 		$data->url = new moodle_url($returnurl);
 		$data->sesskey=sesskey();
 		$data->deleteicon = html_writer::empty_tag('img', array('src'=>$OUTPUT->pix_url('t/delete'), 'alt'=>get_string('delete'), 'class'=>'iconsmall'));
 		$data->editicon = html_writer::empty_tag('img', array('src'=>$OUTPUT->pix_url('i/edit'), 'alt'=>get_string('edit'), 'class'=>'iconsmall'));
+		$data->upicon = html_writer::empty_tag('img', array('src'=>$OUTPUT->pix_url('t/up'), 'alt'=>get_string('up'), 'class'=>'iconsmall'));
+		$data->downicon = html_writer::empty_tag('img', array('src'=>$OUTPUT->pix_url('t/down'), 'alt'=>get_string('down'), 'class'=>'iconsmall'));
+
 		$course = get_course_detail($id);
 		$PAGE->set_title($course['name']);
-		$PAGE->navbar->add($course['name'], null, global_navigation::TYPE_CUSTOM);
+		$PAGE->navbar->add($course['name'], new moodle_url('/local/catalog/courses.php', array('id'=>$id, 'action'=>'editcourse')), global_navigation::TYPE_CUSTOM);
         $data->header = $OUTPUT->header();
         $data->heading =  $OUTPUT->heading($course['name']);
         $data->footer = $OUTPUT->footer();
         $data->editform = $editform->render();
+        $data->metaform = $metaform->render();
+        $data->catalog_id = $id;
+        $data->metadata = local_catalog_get_course_metadata($id);
+       	$data->metadata[0]['first'] = true;
+       	$data->metadata[count($data->metadata)-1]['last'] = true;
+        if(count($data->metadata)>0)$data->hasmeta = true;
 		echo $OUTPUT->render_from_template('local_catalog/editcourse', $data);
 }
 
