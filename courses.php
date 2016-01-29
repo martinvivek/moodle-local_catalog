@@ -135,6 +135,26 @@ if($action=="metaup"){
 	$displayedit = true;
 }
 
+if($action=="addmc"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	confirm_sesskey();
+	$addform =  new local_catalog_editcourse_mcs(new moodle_url($returnurl, array('action' => $addmeta, 'catalog_id'=>$catalog_id)), array('catalog_id'=>$catalog_id));
+	if($formdata = $addform->get_data()){
+		$formdata->catalog_id = $catalog_id;
+		local_catalog_add_course_mc($formdata);
+	}
+	$displayindex = false;
+	$displayedit = true;
+}
+
+if($action=="mcdel"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	$mcid = required_param('mcid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_delete_course_mc($mcid, $catalog_id);
+	$displayindex = false;
+	$displayedit = true;
+}
 
 if($displayindex){
 		$data = new stdClass();
@@ -151,17 +171,19 @@ if($displayindex){
         $data->header = $OUTPUT->header();
         $data->heading =  $OUTPUT->heading(get_string('coursesetup', 'local_catalog'));
         $data->footer = $OUTPUT->footer();
-		echo $OUTPUT->render_from_template('local_catalog/addcourse', $data);
+		echo $OUTPUT->render_from_template('local_catalog/courses_add', $data);
 }
 
 if($displayedit){
+	local_catalog_get_all_microcredentials();
 		if(isset($catalog_id))$id = $catalog_id;
 		else $id = required_param('id', PARAM_INT);
 
 		$record = $DB->get_record('local_catalog',array('id'=>$id), '*', MUST_EXIST);
 		$editform = new local_catalog_editcourse(new moodle_url($returnurl, array('action' => $saveedits, 'id'=>$id)), array('record'=>$record));
-
 		$metaform = new local_catalog_coursemeta(new moodle_url($returnurl, array('action' => $addmeta, 'catalog_id'=>$id)), array('catalog_id'=>$id));
+		$mcform = new local_catalog_editcourse_mcs(new moodle_url($returnurl, array('action' => 'addmc', 'catalog_id'=>$id)), array('catalog_id'=>$id));
+
 		$data = new stdClass();
 		$data->url = new moodle_url($returnurl);
 		$data->sesskey=sesskey();
@@ -183,7 +205,10 @@ if($displayedit){
        	$data->metadata[0]['first'] = true;
        	$data->metadata[count($data->metadata)-1]['last'] = true;
         if(count($data->metadata)>0)$data->hasmeta = true;
-		echo $OUTPUT->render_from_template('local_catalog/editcourse', $data);
+        $data->mcform = $mcform->render();
+        $data->course_mcs = local_catalog_get_course_microcredentials($id);
+        if(count($data->course_mcs)>0)$data->hasmcs = true;
+		echo $OUTPUT->render_from_template('local_catalog/courses_edit', $data);
 }
 
 ?>

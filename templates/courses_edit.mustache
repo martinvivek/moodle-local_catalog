@@ -10,7 +10,7 @@
 				<th></th>
 				<th>{{#str}}entry, local_catalog{{/str}}</th>
 				<th>{{#str}}value, local_catalog{{/str}}</th>
-				<th>{{#str}}url, local_catalog{{/str}}</th>
+				<th>{{#str}}url{{/str}}</th>
 			</tr>
 			{{#metadata}}
 				<tr>
@@ -29,5 +29,21 @@
 		</table>
 	{{/hasmeta}}
 	{{{metaform}}}
-	
+
+	<h3>{{#str}}coursemicrocredentials, local_catalog{{/str}}</h3>
+	{{#hasmcs}}
+		<table class="table table-striped">
+			{{#course_mcs}}
+				<tr>
+					<td>
+
+						<a href="{{{returnurl}}}?action=mcdel&mcid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{deleteicon}}}</a>
+					
+					</td>
+					<td>{{name}}</td>
+				</tr>
+			{{/course_mcs}}
+		</table>
+	{{/hasmcs}}
+	{{{mcform}}}
 {{{footer}}}

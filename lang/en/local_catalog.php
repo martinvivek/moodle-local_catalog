@@ -43,6 +43,9 @@ $string['label_mutliple_courses'] = "Label for multiple course editions";
 $string['previous_courses'] = "Previous Courses";
 $string['enrol_open'] = "Open for Enrollment";
 $string['enrolment_course'] = "Course/Enrollment";
+$string['entry'] = "Entry Title";
+$string['value'] = "Value";
+$string['coursemicrocredentials'] = "Course Microcredentials";
 
 
 $string['coursesetup'] = "Course Setup";

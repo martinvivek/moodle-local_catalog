@@ -222,8 +222,17 @@ class local_catalog_coursemeta extends moodleform{
         }
 }
 
-class local_catalog_editcourse_courses extends moodleform{
+class local_catalog_editcourse_mcs extends moodleform{
         public function definition(){
+                global $CFG;
+                $mform = $this->_form; // Don't forget the underscore! 
 
+                if (isset($this->_customdata['catalog_id']) && is_object($this->_customdata['catalog_id'])) {
+                        $catalog_id = $this->_customdata['catalog_id'];
+                }
+                $mform->addElement('select', 'section_id', get_string('entry'), local_catalog_get_all_microcredentials('assoc'),  array('style'=>'width: 100%'));
+                $mform->addRule('section_id', get_string('required'), 'required', null, 'client');
+
+                $this->add_action_buttons();
         }
 }

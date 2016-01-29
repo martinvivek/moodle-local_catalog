@@ -277,3 +277,69 @@ function local_catalog_get_all_enrolments(){
 	}
 	return $e;
 }
+
+function local_catalog_get_all_microcredentials($keytype="SEQUENTIAL"){
+	global $CFG;
+	global $DB;
+	global $PAGE;
+	$keytype = strtolower($keytype);
+	if(!isset($PAGE->theme->settings->course_microcredentials))return array();
+	$mc_course = $PAGE->theme->settings->course_microcredentials;
+	$records = $DB->get_records('course_sections',array('course'=>$mc_course),'section');
+	$result = array();
+	$i=0;
+	foreach($records as $r){
+		if(strlen($r->name)==0)continue;
+		if($r->section==0)continue;
+		if($keytype=="id")$key = $r->id;
+		else $key=$i;
+		$result[$key]['id'] = $r->id;
+		$result[$key]['name'] = $r->name;
+		$result[$key]['sequence'] = $r->section;
+		$i++;
+	}
+
+	if($keytype=="assoc"){
+		$assoc = array();
+		foreach($result as $r){
+			$assoc[$r['id']] = $r['name'];
+		}
+		return $assoc;
+	}
+	else return $result;
+}
+
+function local_catalog_add_course_mc($data){
+	global $DB;
+	$DB->delete_records('local_catalog_course_mcs',array('catalog_id'=>$data->catalog_id, 'section_id'=>$data->section_id));
+    $id = $DB->insert_record('local_catalog_course_mcs', $data);
+    return $id;
+}
+
+function local_catalog_delete_course_mc($mcid, $catalog_id){
+	global $DB;
+	$DB->delete_records('local_catalog_course_mcs',array('catalog_id'=>$catalog_id, 'section_id'=>$mcid));
+}
+
+function local_catalog_get_course_microcredentials($catalog_id){
+	global $DB;
+	$cm_list = $DB->get_records('local_catalog_course_mcs',array('catalog_id'=>$catalog_id));
+	$mc_list = local_catalog_get_all_microcredentials('id');
+	$result = array();
+	$sort = array();
+	foreach($cm_list as $c){
+		$result[$c->section_id]['id'] = $mc_list[$c->section_id]['id'];
+		$result[$c->section_id]['name'] = $mc_list[$c->section_id]['name'];
+		$sort[$c->section_id] = $mc_list[$c->section_id]['sequence'];
+	}
+	if(count($result)==0)return array();
+	asort($sort);
+	$r = array();
+	$i=0;
+	foreach($sort as $key=>$elem){
+		$r[$i] = $result[$key];
+		$i++;
+	}
+	return $r;
+
+}
