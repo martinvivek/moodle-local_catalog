@@ -32,11 +32,11 @@ $systemcontext = context_system::instance();
 require_login();
 require_capability('moodle/site:config', $systemcontext);
 /// Build page
-$returnurl = $CFG->wwwroot.'/local/catalog/courses.php';
+$returnurl = $CFG->wwwroot.'/local/catalog/course_setup.php';
 $PAGE->set_url($returnurl);
 $PAGE->set_context($systemcontext);
 $PAGE->set_heading($SITE->fullname);
-$PAGE->navbar->add(get_string('coursesetup','local_catalog'), new moodle_url('/local/catalog/courses.php'), global_navigation::TYPE_CUSTOM);
+$PAGE->navbar->add(get_string('coursesetup','local_catalog'), new moodle_url('/local/catalog/course_setup.php'), global_navigation::TYPE_CUSTOM);
 //page layout
 $PAGE->set_pagelayout('admin');     
 //actions list
@@ -194,7 +194,7 @@ if($displayedit){
 
 		$course = get_course_detail($id);
 		$PAGE->set_title($course['name']);
-		$PAGE->navbar->add($course['name'], new moodle_url('/local/catalog/courses.php', array('id'=>$id, 'action'=>'editcourse')), global_navigation::TYPE_CUSTOM);
+		$PAGE->navbar->add($course['name'], new moodle_url('/local/catalog/course_setup.php', array('id'=>$id, 'action'=>'editcourse')), global_navigation::TYPE_CUSTOM);
         $data->header = $OUTPUT->header();
         $data->heading =  $OUTPUT->heading($course['name']);
         $data->footer = $OUTPUT->footer();

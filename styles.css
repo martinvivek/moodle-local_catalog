@@ -1,0 +1,11 @@
+.btn-enrol{
+	background: #c00;
+	font-size: 18px !important;
+	color: white;
+}
+
+.btn-enrol:hover{
+	background: #c00;
+	font-size: 18px !important;
+	color: white !important;
+}
