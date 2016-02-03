@@ -29,10 +29,14 @@
  */
 $string['pluginname']  = 'Course Catalog';
 $string['catalogsetup'] = "Catalog Setup";
+$string['catalogsetup_desc'] = '<a href="{$a}">Catalog Setup</a>: Define metadata and static page categories';
+
 
 //Setup
 $string['metadatasetup'] = "Set Up Metadata Categories";
 $string['coursepagesetup'] = "Set Up Course Pages";
+$string['coursepagesetup_desc'] = '<a href="{$a}">Course Page Setup</a>: Define courses and course page details.';
+
 $string['edit_metadata_entry'] = "Edit Metadata Entry";
 $string['course_metadata'] = "Course Metadata";
 $string['edit_page'] = "Edit Page";
