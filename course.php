@@ -34,7 +34,6 @@ $returnurl = $CFG->wwwroot.'/local/catalog/courses.php';
 $PAGE->set_url($returnurl);
 $PAGE->set_context($systemcontext);
 $PAGE->set_heading($SITE->fullname);
-$PAGE->navbar->add(get_string('coursesetup','local_catalog'), new moodle_url('/local/catalog/courses.php'), global_navigation::TYPE_CUSTOM);
 //page layout
 $PAGE->set_pagelayout('standard');    
 
@@ -43,13 +42,31 @@ $detail = get_course_detail($id);
 
 $data = new stdClass();
 $data->url = new moodle_url($returnurl);
+$data->wwwroot = $CFG->wwwroot;
 $PAGE->set_title($detail['name']);
-//$PAGE->navbar->add($course['name'], new moodle_url('/local/catalog/course_setup.php', array('id'=>$id, 'action'=>'editcourse')), global_navigation::TYPE_CUSTOM);
+$PAGE->navbar->add($detail['name'], new moodle_url('/local/catalog/course.php', array('id'=>$id)), global_navigation::TYPE_CUSTOM);
 $data->header = $OUTPUT->header();
 $data->heading =  $OUTPUT->heading($detail['name']);
 $data->footer = $OUTPUT->footer();
 $data->preview_video_id = $detail['preview_video_id'];
 $data->description = $detail['description'];
+if($detail['enrol_open']==1)$data->enrol_open = true;
+$data->enrol_url = local_catalog_get_enrolment_url($detail['enrol_course_id']);
+
+$data->metadata = local_catalog_get_course_metadata($id);
+if(count($data->metadata)>0){
+	$data->has_metadata = true;
+	foreach($data->metadata as $key=>$elem){
+		if($elem['datatype']=="list")$data->metadata[$key]['islist']=true;
+		if(strlen($elem['url'])>0)$data->metadata[$key]['hasurl'] = true;
+	}
+}
+
+$data->mcs = local_catalog_get_course_microcredentials($id);
+if(count($data->mcs)>0){
+	$data->hasmcs = true;
+	$data->mccourse = get_microcredential_course();
+}
 
 echo $OUTPUT->render_from_template('local_catalog/course', $data);
 

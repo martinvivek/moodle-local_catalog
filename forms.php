@@ -159,7 +159,7 @@ class local_catalog_editcourse extends moodleform{
                 $mform->addElement('advcheckbox', 'enrol_open', get_string('enrol_open', 'local_catalog'), null, array('group' => 1), array(0, 1));
 
 
-                $enrolments = array_merge(array(''), local_catalog_get_all_enrolments());
+                $enrolments = local_catalog_get_all_enrolments();
                 $mform->addElement('select', 'enrol_course_id', get_string('enrolment_course', 'local_catalog'), $enrolments);
 
                 $mform->addElement('editor', 'description', get_string('description'));
@@ -213,10 +213,9 @@ class local_catalog_coursemeta extends moodleform{
         function validation($data, $files){
                 $errors = array();
                 $datatype = local_catalog_metadata_get_datatype($data['metadata_id']);
-                
                 if($datatype=="date")if(strtotime($data['value'])===false)$errors['value'] = get_string('invalid');
                 if($datatype=="numeric")if(!is_numeric($data['value']))$errors['value'] = get_string('invalid');
-                if($datatype=="list")if(count(explode($data['value'],';'))<2)$errors['value'] = get_string('invalid');
+                if($datatype=="list")if(count(explode(';',$data['value']))<2)$errors['value'] = get_string('invalid');
 
                 return $errors;
         }

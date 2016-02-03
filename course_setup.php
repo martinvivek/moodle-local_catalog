@@ -138,7 +138,7 @@ if($action=="metaup"){
 if($action=="addmc"){
 	$catalog_id = required_param('catalog_id',PARAM_INT);
 	confirm_sesskey();
-	$addform =  new local_catalog_editcourse_mcs(new moodle_url($returnurl, array('action' => $addmeta, 'catalog_id'=>$catalog_id)), array('catalog_id'=>$catalog_id));
+	$addform =  new local_catalog_editcourse_mcs(new moodle_url($returnurl, array('action' => $addmc, 'catalog_id'=>$catalog_id)), array('catalog_id'=>$catalog_id));
 	if($formdata = $addform->get_data()){
 		$formdata->catalog_id = $catalog_id;
 		local_catalog_add_course_mc($formdata);
@@ -204,7 +204,12 @@ if($displayedit){
         $data->metadata = local_catalog_get_course_metadata($id);
        	$data->metadata[0]['first'] = true;
        	$data->metadata[count($data->metadata)-1]['last'] = true;
-        if(count($data->metadata)>0)$data->hasmeta = true;
+        if(count($data->metadata)>0){
+        	$data->hasmeta = true;
+        	foreach($data->metadata as $key=>$elem){
+        		if($elem['datatype']=="list")$data->metadata[$key]['islist']=true;
+        	}
+        }
         $data->mcform = $mcform->render();
         $data->course_mcs = local_catalog_get_course_microcredentials($id);
         if(count($data->course_mcs)>0)$data->hasmcs = true;

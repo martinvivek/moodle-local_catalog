@@ -1,20 +1,86 @@
 {{{header}}}
 
 <div class="row">
-	<div class="col-xs-12 col-md-9">
-		{{{heading}}}
-	</div>
-	<div class="col-xs-12 col-md-3">
-		<a class="btn btn-block btn-large btn-enrol" href="#">Enroll now!</a>
-	</div>
+	{{#enrol_open}}
+		<div class="col-xs-12 col-md-9">
+			{{{heading}}}
+		</div>
+		<div class="col-xs-12 col-md-3">
+			<a class="btn btn-block btn-large btn-enrol" href="{{{enrol_url}}}">Enroll now!</a>
+		</div>
+	{{/enrol_open}}
+	{{^enrol_open}}
+		<div class="col-xs-12 col-md-12">
+			{{{heading}}}
+		</div>
+	{{/enrol_open}}
 </div>
 
 <div class="row">
-	<div class="col-xs-12 col-md-7">
-
+	<div class="col-xs-12 col-md-9">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="embed-responsive embed-responsive-16by9 centered preview-video">
+				  <iframe class="embed-responsive-item" src="//www.youtube.com/embed/{{preview_video_id}}?modestbranding=1&autohide=1&showinfo=0&rel=0" frameborder="0" allowfullscreen></iframe>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="well well-lg">
+					{{{description}}}
+				</div>
+			</div>
+		</div>
 	</div>
-	<div class="col-xs-12 col-md-5">
-
+	<div class="col-xs-12 col-md-3">
+		{{#has_metadata}}
+			<div class="row">
+				<div class="col-xs-12">
+					<table class="table table-condensed table-striped table-responsive">
+						{{#metadata}}
+							<tr>
+								<td class="col-xs-6">
+									<i class="metaicon fa fa-{{fa_icon}}"></i><strong>{{name}}
+								</td>
+								<td class="col-xs-6">
+									{{#islist}}
+										{{#value}}
+											{{#hasurl}}
+												<a href="{{{url}}}">{{.}}</a><br/>
+											{{/hasurl}}
+											{{^hasurl}}
+												{{.}}<br/>
+											{{/hasurl}}
+										{{/value}}
+									{{/islist}}
+									{{^islist}}
+										{{#hasurl}}
+												<a href="{{{url}}}">{{value}}</a><br/>
+											{{/hasurl}}
+											{{^hasurl}}
+												{{value}}<br/>
+											{{/hasurl}}
+									{{/islist}}
+								</td>
+							</tr>
+						{{/metadata}}
+					</table>
+				</div>
+			</div>
+		{{/has_metadata}}
+		{{#hasmcs}}
+			<h3>{{#str}}availablemicrocredentials, local_catalog{{/str}}</h3>
+			<table class="table table-condensed table-striped table-responsive">
+				{{#mcs}}
+					<tr>
+						<td>
+							<a href="{{wwwroot}}/course/view.php?id={{mccourse}}&section={{sequence}}">{{name}}</a>
+						</td>
+					</tr>
+				{{/mcs}}
+			</table>
+		{{/hasmcs}}
 	</div>
 </div>
 

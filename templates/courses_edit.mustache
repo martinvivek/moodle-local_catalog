@@ -1,5 +1,6 @@
 {{{header}}}
 {{{heading}}}
+	<a href="course.php?id={{catalog_id}}">{{#str}}preview{{/str}}</a>
 
 	{{{editform}}}
 
@@ -22,7 +23,16 @@
 					
 					</td>
 					<td><i class="fa fa-{{fa_icon}}"></i>&nbsp;{{name}}</td>
-					<td>{{value}}</td>
+					<td>
+						{{#islist}}
+							{{#value}}
+								{{.}}<br/>
+							{{/value}}
+						{{/islist}}
+						{{^islist}}
+							{{value}}
+						{{/islist}}
+					</td>
 					<td><a href="{{url}}" target="_blank">{{url}}</a></td>
 				</tr>
 			{{/metadata}}

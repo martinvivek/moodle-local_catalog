@@ -62,14 +62,14 @@ function local_catalog_metadata_get_datatype($id){
 *	Get a list of all metadata categories
 *	@return array of all metadata records
 **/
-function local_catalog_get_metadata_categories($key="SEQUENTIAL"){
+function local_catalog_get_metadata_categories($keytype="SEQUENTIAL"){
 	global $DB;
 	$entry_list = $DB->get_records('local_catalog_metadata', null, 'name');
 
 	$entries = array();
 	$i=0;
 	foreach($entry_list as $e){
-		if($key=="ID") $key = $e->id;
+		if($keytype=="ID") $key = $e->id;
 		else $key = $i;
 		$entries[$key]['id'] = $e->id;
 		$entries[$key]['name'] = $e->name;
@@ -134,7 +134,6 @@ function local_catalog_move_course_metadata($direction, $id, $catalog_id){
 function local_catalog_get_course_metadata($catalog_id){
 	global $DB;
 	$cat = local_catalog_get_metadata_categories("ID");
-
 	$meta = $DB->get_records('local_catalog_course_meta', array('catalog_id'=>$catalog_id), 'sequence');
 	$entries = array();
 	$i=0;
@@ -278,13 +277,28 @@ function local_catalog_get_all_enrolments(){
 	return $e;
 }
 
+function local_catalog_get_enrolment_url($id){
+	global $DB;
+	global $CFG;
+	if(!is_numeric($id))return "#";
+	$enrol = $DB->get_record('enrol', array('id'=>$id), '*', MUST_EXIST);
+	if($enrol->enrol=="survey")return $CFG->wwwroot.'/enrol/survey/survey.php?enrolid='.$id;
+	if($enrol->enrol=="guest")return $CFG->wwwroot.'/course/view.php?id='.$enrol->courseid;
+	return $CFG->wwwroot.'/enrol/?id='.$enrol->courseid;
+}
+
+function get_microcredential_course(){
+	global $PAGE;
+	if(!isset($PAGE->theme->settings->course_microcredentials))return false;
+	else return $PAGE->theme->settings->course_microcredentials;
+}
+
 function local_catalog_get_all_microcredentials($keytype="SEQUENTIAL"){
 	global $CFG;
 	global $DB;
-	global $PAGE;
 	$keytype = strtolower($keytype);
-	if(!isset($PAGE->theme->settings->course_microcredentials))return array();
-	$mc_course = $PAGE->theme->settings->course_microcredentials;
+	if(!get_microcredential_course())return array();
+	$mc_course = get_microcredential_course();
 	$records = $DB->get_records('course_sections',array('course'=>$mc_course),'section');
 	$result = array();
 	$i=0;
@@ -330,6 +344,7 @@ function local_catalog_get_course_microcredentials($catalog_id){
 	foreach($cm_list as $c){
 		$result[$c->section_id]['id'] = $mc_list[$c->section_id]['id'];
 		$result[$c->section_id]['name'] = $mc_list[$c->section_id]['name'];
+		$result[$c->section_id]['sequence'] =$mc_list[$c->section_id]['sequence'];
 		$sort[$c->section_id] = $mc_list[$c->section_id]['sequence'];
 	}
 	if(count($result)==0)return array();

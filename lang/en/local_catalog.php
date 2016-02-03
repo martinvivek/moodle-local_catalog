@@ -46,6 +46,7 @@ $string['enrolment_course'] = "Course/Enrollment";
 $string['entry'] = "Entry Title";
 $string['value'] = "Value";
 $string['coursemicrocredentials'] = "Course Microcredentials";
+$string['availablemicrocredentials'] = "Available Microcredentials";
 
 
 $string['coursesetup'] = "Course Setup";
