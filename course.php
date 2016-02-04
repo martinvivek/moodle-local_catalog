@@ -48,8 +48,16 @@ $PAGE->navbar->add($detail['name'], new moodle_url('/local/catalog/course.php', 
 $data->header = $OUTPUT->header();
 $data->heading =  $OUTPUT->heading($detail['name']);
 $data->footer = $OUTPUT->footer();
+
+$data->coursetitle = $detail['name'];
+if(strlen($detail['subtitle'])>0)$data->subtitle = $detail['subtitle'];
 $data->preview_video_id = $detail['preview_video_id'];
 $data->description = $detail['description'];
+if(strlen($detail['objectives'])>0){
+	$data->hasobjectives = true;
+	$data->objectives = $detail['objectives'];
+}
+
 if($detail['enrol_open']==1)$data->enrol_open = true;
 $data->enrol_url = local_catalog_get_enrolment_url($detail['enrol_course_id']);
 

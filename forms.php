@@ -147,6 +147,10 @@ class local_catalog_editcourse extends moodleform{
                 $mform->addRule('name', get_string('required'), 'required', null, 'client');
                 $mform->addRule('name', get_string('maximumchars', '', 64), 'maxlength', 64, 'client');
 
+                $mform->addElement('text', 'subtitle', get_string('subtitle'), array('style'=>'width: 100%')); // Add elements to your form
+                $mform->setType('subtitle', PARAM_TEXT);                   //Set type of element
+                $mform->addRule('subtitle', get_string('maximumchars', '', 64), 'maxlength', 64, 'client');
+
                 $mform->addElement('text', 'preview_video_id', get_string('youtube_id_preview_video','local_catalog'), array('style'=>'width: 100%')); // Add elements to your form
                 $mform->setType('preview_video_id', PARAM_TEXT);                   //Set type of element
                 $mform->addRule('preview_video_id', get_string('maximumchars', '', 64), 'maxlength', 64, 'client');
@@ -165,7 +169,10 @@ class local_catalog_editcourse extends moodleform{
                 $mform->addElement('editor', 'description', get_string('description'));
                 $mform->setType('description', PARAM_RAW);
 
-                $mform->addElement('text', 'thumbnail', get_string('thumbnail'), array('style'=>'width: 100%')); // Add elements to your form
+                $mform->addElement('editor', 'objectives', get_string('objectives'));
+                $mform->setType('objectives', PARAM_RAW);
+
+                $mform->addElement('text', 'thumbnail', get_string('thumbnail','local_catalog'), array('style'=>'width: 100%')); // Add elements to your form
                 $mform->setType('thumbnail', PARAM_URL);                   //Set type of element
                 $mform->addRule('preview_video_id', get_string('maximumchars', '', 128), 'maxlength', 128, 'client');
 

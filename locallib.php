@@ -210,8 +210,10 @@ function get_course_detail($id){
 	$e = $DB->get_record('local_catalog', array('id'=>$id), '*', MUST_EXIST);
 		$course['id'] = $e->id;
 		$course['name'] = $e->name;
+		$course['subtitle'] = $e->subtitle;
 		$course['preview_video_id'] = $e->preview_video_id;
 		$course['description'] = $e->description;
+		$course['objectives'] = $e->objectives;
 		$course['thumbnail'] = $e->thumbnail;
 		$course['multi_course_label'] = $e->multi_course_label;
 		$course['enrol_course_id'] = $e->enrol_course_id;

@@ -47,10 +47,13 @@ $string['label_mutliple_courses'] = "Label for multiple course editions";
 $string['previous_courses'] = "Previous Courses";
 $string['enrol_open'] = "Open for Enrollment";
 $string['enrolment_course'] = "Course/Enrollment";
+$string['subtitle'] = "Subtitle";
+$string['objective'] = "Course Objectives";
+$string['thumbnail'] = "Thumbnail Image URL";
 $string['entry'] = "Entry Title";
 $string['value'] = "Value";
-$string['coursemicrocredentials'] = "Course Microcredentials";
-$string['availablemicrocredentials'] = "Available Microcredentials";
+$string['coursemicrocredentials'] = "Course Micro-credentials";
+$string['availablemicrocredentials'] = "Micro-credentials";
 
 
 $string['coursesetup'] = "Course Setup";

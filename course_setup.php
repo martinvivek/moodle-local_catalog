@@ -87,6 +87,7 @@ if($action==$saveedits){
 		$editform =  new local_catalog_editcourse(new moodle_url($returnurl, array('action' => $saveedits, 'id'=>$id)), array('record'=>$record));
 		if($formdata = $editform->get_data()){
 			$formdata->description = $formdata->description['text'];
+			$formdata->objectives = $formdata->objectives['text'];
 			$success = local_catalog_edit_course($formdata);
 			unset($record);
 		}

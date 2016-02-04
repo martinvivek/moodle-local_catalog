@@ -145,7 +145,31 @@ function xmldb_local_catalog_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2016011900, 'local', 'catalog');
     }
 
-     
+    if ($oldversion < 2016020300) {
+
+        // Define field subtitle to be added to local_catalog.
+        $table = new xmldb_table('local_catalog');
+        $field = new xmldb_field('subtitle', XMLDB_TYPE_CHAR, '64', null, null, null, null, 'name');
+
+        // Conditionally launch add field subtitle.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+
+        // Define field objectives to be added to local_catalog.
+        $table = new xmldb_table('local_catalog');
+        $field = new xmldb_field('objectives', XMLDB_TYPE_TEXT, null, null, null, null, null, 'description');
+
+        // Conditionally launch add field objectives.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Catalog savepoint reached.
+        upgrade_plugin_savepoint(true, 2016020300, 'local', 'catalog');
+    }
+
      
     /*
      * And that's all. Please, examine and understand the 3 example blocks above. Also
