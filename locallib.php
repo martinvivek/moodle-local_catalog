@@ -373,6 +373,47 @@ function local_catalog_add_course_edition($data){
     return $id;
 }
 
+function local_catalog_delete_course_edition($id, $catalog_id){
+	global $DB;
+    $result = $DB->delete_records('local_catalog_allcourses', array('id'=>$id, 'catalog_id'=>$catalog_id));
+    if($result==false)return $result;
+
+    $meta = $DB->get_records('local_catalog_allcourses', array('catalog_id'=>$catalog_id), 'sequence');
+    $i=1;
+    foreach($meta as $m){
+    	$obj = new StdClass();
+    	$obj->id = $m->id;
+    	$obj->sequence = $i;
+    	$DB->update_record('local_catalog_allcourses',$obj);
+    	unset($obj);
+    	$i++;
+    }
+    return;
+}
+
+function local_catalog_move_course_edition($direction, $id, $catalog_id){
+	global $DB;
+	$direction = strtolower($direction);
+	if($direction!="down"&&$direction!="up")return false;
+
+	$sequence = $DB->get_field('local_catalog_allcourses','sequence',array('id'=>$id), MUST_EXIST);	
+
+	if($direction=="up") $newseq = $sequence - 1;
+	if($direction=="down")$newseq = $sequence + 1;
+	$switch = $DB->get_field('local_catalog_allcourses','id',array('catalog_id'=>$catalog_id, 'sequence'=>$newseq), MUST_EXIST);
+
+    $obj = new StdClass();
+	$obj->id = $id;
+	$obj->sequence = $newseq;
+	$DB->update_record('local_catalog_allcourses',$obj);
+
+    $obj = new StdClass();
+	$obj->id = $switch;
+	$obj->sequence = $sequence;
+	$DB->update_record('local_catalog_allcourses',$obj);
+
+}
+
 function local_catalog_get_course_editions($catalog_id, $keytype="SEQUENTIAL"){
 	global $DB;
 	$keytype = strtolower($keytype);
@@ -386,7 +427,8 @@ function local_catalog_get_course_editions($catalog_id, $keytype="SEQUENTIAL"){
 		else $key = $elem->id;
 		$ced[$key]['id'] = $elem->id;
 		$ced[$key]['course_id'] = $elem->course_id;
-		$ced[$key]['name'] = $all_course_list[$elem->course_id];
+		$ced[$key]['coursename'] = $all_course_list[$elem->course_id];
+		$ced[$key]['label'] = $elem->label;
 		$ced[$key]['sequence'] = $elem->sequence;
 		$i++;
 	}

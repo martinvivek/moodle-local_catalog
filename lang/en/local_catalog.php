@@ -50,6 +50,8 @@ $string['entry'] = "Entry Title";
 $string['value'] = "Value";
 $string['coursemicrocredentials'] = "Course Micro-credentials";
 $string['availablemicrocredentials'] = "Micro-credentials";
+$string['label'] = "Label";
+$string['mclearnmore'] = "Learn More";
 
 
 $string['coursesetup'] = "Course Setup";

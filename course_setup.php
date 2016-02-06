@@ -48,6 +48,7 @@ $deletecourse = 'deletecourse';
 $addmeta = "addmeta";
 $displayindex = true;
 $displayedit = false;
+$displaystatic = false;
 
 $action = optional_param('action', 0, PARAM_TEXT);
 $action = (!empty($action) ? $action : 'index');
@@ -120,6 +121,33 @@ if($action=="addedition"){
 	$displayindex = false;
 	$displayedit = true;
 }
+if($action=="editiondel"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	$editionid = required_param('editionid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_delete_course_edition($editionid, $catalog_id);
+	$displayindex = false;
+	$displayedit = true;
+}
+
+if($action=="editiondown"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	$editionid = required_param('editionid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_move_course_edition("down", $editionid, $catalog_id);
+	$displayindex = false;
+	$displayedit = true;
+}
+
+if($action=="editionup"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	$editionid = required_param('editionid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_move_course_edition("up", $editionid, $catalog_id);
+	$displayindex = false;
+	$displayedit = true;
+}
+
 
 if($action=="metadel"){
 	$catalog_id = required_param('catalog_id',PARAM_INT);
@@ -228,8 +256,12 @@ if($displayedit){
         if(count($data->course_mcs)>0)$data->hasmcs = true;
 
         $data->editions = local_catalog_get_course_editions($id);
-        if(count($data->editions)>0)$data->haseditions = true;
-        $data->editionform = $editionform->render();
+        if(count($data->editions)>0){
+        	$data->haseditions = true;
+        	$data->editionform = $editionform->render();
+   	       	$data->editions[0]['first'] = true;
+	       	$data->editions[count($data->editions)-1]['last'] = true;
+        }
 		echo $OUTPUT->render_from_template('local_catalog/courses_edit', $data);
 }
 

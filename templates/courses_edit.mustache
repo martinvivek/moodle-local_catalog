@@ -60,16 +60,22 @@
 	<h3>{{#str}}courseeditions, local_catalog{{/str}}</h3>
 	{{#haseditions}}
 		<table class="table table-striped">
+			<tr>
+				<th></th>
+				<th>{{#str}}course{{/str}}</th>
+				<th>{{#str}}label, local_catalog{{/str}}</th>
+			</tr>
 			{{#editions}}
 				<tr>
 					<td>
 
-						<a href="{{{returnurl}}}?action=metadel&metaid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{deleteicon}}}</a>
-						{{^first}}<a href="{{{returnurl}}}?action=metaup&metaid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{upicon}}}</a>{{/first}}
-						{{^last}}<a href="{{{returnurl}}}?action=metadown&metaid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{downicon}}}</a>{{/last}}
+						<a href="{{{returnurl}}}?action=editiondel&editionid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{deleteicon}}}</a>
+						{{^first}}<a href="{{{returnurl}}}?action=editionup&editionid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{upicon}}}</a>{{/first}}
+						{{^last}}<a href="{{{returnurl}}}?action=editiondown&editionid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{downicon}}}</a>{{/last}}
 					
 					</td>
-					<td>{{name}}</td>
+					<td>{{coursename}}</td>
+					<td>{{label}}</td>
 				</tr>
 			{{/editions}}
 		</table>

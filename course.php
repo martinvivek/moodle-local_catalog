@@ -76,6 +76,12 @@ if(count($data->mcs)>0){
 	$data->mccourse = get_microcredential_course();
 }
 
+$data->editions = local_catalog_get_course_editions($id);
+if(count($data->editions)>0){
+	$data->haseditions=true;
+	$data->editionlabel = $detail['multi_course_label'];
+}
+
 echo $OUTPUT->render_from_template('local_catalog/course', $data);
 
 ?>
