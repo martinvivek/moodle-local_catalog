@@ -56,4 +56,23 @@
 		</table>
 	{{/hasmcs}}
 	{{{mcform}}}
+
+	<h3>{{#str}}courseeditions, local_catalog{{/str}}</h3>
+	{{#haseditions}}
+		<table class="table table-striped">
+			{{#editions}}
+				<tr>
+					<td>
+
+						<a href="{{{returnurl}}}?action=metadel&metaid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{deleteicon}}}</a>
+						{{^first}}<a href="{{{returnurl}}}?action=metaup&metaid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{upicon}}}</a>{{/first}}
+						{{^last}}<a href="{{{returnurl}}}?action=metadown&metaid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{downicon}}}</a>{{/last}}
+					
+					</td>
+					<td>{{name}}</td>
+				</tr>
+			{{/editions}}
+		</table>
+	{{/haseditions}}
+	{{{editionform}}}
 {{{footer}}}

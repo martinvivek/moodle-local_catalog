@@ -36,8 +36,6 @@ $returnurl = $CFG->wwwroot.'/local/catalog/setup.php';
 $PAGE->set_url($returnurl);
 $PAGE->set_context($systemcontext);
 $PAGE->set_heading($SITE->fullname);
-$PAGE->navbar->add(get_string('pluginname','local_catalog'), new moodle_url('/admin/settings.php', array('section'=>'catalog')), global_navigation::TYPE_CUSTOM);
-$PAGE->navbar->add(get_string('catalogsetup','local_catalog'), new moodle_url('/local/catalog/setup.php'), global_navigation::TYPE_CUSTOM);
 //page layout
 $PAGE->set_pagelayout('admin');     
 //actions list

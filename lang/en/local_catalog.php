@@ -29,14 +29,9 @@
  */
 $string['pluginname']  = 'Course Catalog';
 $string['catalogsetup'] = "Catalog Setup";
-$string['catalogsetup_desc'] = '<a href="{$a}">Catalog Setup</a>: Define metadata and static page categories';
-
-
 //Setup
 $string['metadatasetup'] = "Set Up Metadata Categories";
-$string['coursepagesetup'] = "Set Up Course Pages";
-$string['coursepagesetup_desc'] = '<a href="{$a}">Course Page Setup</a>: Define courses and course page details.';
-
+$string['coursepagesetup'] = "Course Setup";
 $string['edit_metadata_entry'] = "Edit Metadata Entry";
 $string['course_metadata'] = "Course Metadata";
 $string['edit_page'] = "Edit Page";
@@ -44,11 +39,12 @@ $string['datatype'] = "Data Type";
 $string['fa-icon'] = "Font Awesome Icon Code";
 $string['youtube_id_preview_video'] = 'YouTube ID of Preview Video';
 $string['label_mutliple_courses'] = "Label for multiple course editions";
+$string['courseeditions'] = "Course Editions";
 $string['previous_courses'] = "Previous Courses";
 $string['enrol_open'] = "Open for Enrollment";
 $string['enrolment_course'] = "Course/Enrollment";
 $string['subtitle'] = "Subtitle";
-$string['objective'] = "Course Objectives";
+$string['objectives'] = "Course Objectives";
 $string['thumbnail'] = "Thumbnail Image URL";
 $string['entry'] = "Entry Title";
 $string['value'] = "Value";

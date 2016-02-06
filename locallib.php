@@ -360,3 +360,35 @@ function local_catalog_get_course_microcredentials($catalog_id){
 	return $r;
 
 }
+
+function local_catalog_get_all_moodle_courses(){
+	global $DB;
+	return $DB->get_records_menu('course', null, 'fullname', 'id, fullname'); 
+}
+
+function local_catalog_add_course_edition($data){
+	global $DB;
+	$data->sequence = $DB->count_records('local_catalog_allcourses', array('catalog_id'=>$data->catalog_id))+1;
+    $id = $DB->insert_record('local_catalog_allcourses', $data);
+    return $id;
+}
+
+function local_catalog_get_course_editions($catalog_id, $keytype="SEQUENTIAL"){
+	global $DB;
+	$keytype = strtolower($keytype);
+	$all_course_list = local_catalog_get_all_moodle_courses();
+	$ed_list = $DB->get_records('local_catalog_allcourses',array('catalog_id'=>$catalog_id),'sequence');
+
+	$ced = array();
+	$i=0;
+	foreach($ed_list as $elem){
+		if($keytype=="sequential")$key = $i;
+		else $key = $elem->id;
+		$ced[$key]['id'] = $elem->id;
+		$ced[$key]['course_id'] = $elem->course_id;
+		$ced[$key]['name'] = $all_course_list[$elem->course_id];
+		$ced[$key]['sequence'] = $elem->sequence;
+		$i++;
+	}
+	return $ced;
+}

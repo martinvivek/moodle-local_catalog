@@ -36,8 +36,6 @@ $returnurl = $CFG->wwwroot.'/local/catalog/course_setup.php';
 $PAGE->set_url($returnurl);
 $PAGE->set_context($systemcontext);
 $PAGE->set_heading($SITE->fullname);
-$PAGE->navbar->add(get_string('pluginname','local_catalog'), new moodle_url('/admin/settings.php', array('section'=>'catalog')), global_navigation::TYPE_CUSTOM);
-$PAGE->navbar->add(get_string('coursesetup','local_catalog'), new moodle_url('/local/catalog/course_setup.php'), global_navigation::TYPE_CUSTOM);
 //page layout
 $PAGE->set_pagelayout('admin');     
 //actions list
@@ -105,6 +103,19 @@ if($action=="addmeta"){
 		$datatype = local_catalog_metadata_get_datatype($formdata->metadata_id);
 		if($datatype=="date")$formdata->value = strtotime($formdata->value);
 		local_catalog_add_course_metadata($formdata);
+	}
+	$displayindex = false;
+	$displayedit = true;
+}
+
+
+if($action=="addedition"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	confirm_sesskey();
+	$addform =  new local_catalog_course_editions(new moodle_url($returnurl, array('addedition' => $addmeta, 'catalog_id'=>$catalog_id)), array('catalog_id'=>$catalog_id));
+	if($formdata = $addform->get_data()){
+		$formdata->catalog_id = $catalog_id;
+		local_catalog_add_course_edition($formdata);
 	}
 	$displayindex = false;
 	$displayedit = true;
@@ -185,7 +196,7 @@ if($displayedit){
 		$editform = new local_catalog_editcourse(new moodle_url($returnurl, array('action' => $saveedits, 'id'=>$id)), array('record'=>$record));
 		$metaform = new local_catalog_coursemeta(new moodle_url($returnurl, array('action' => $addmeta, 'catalog_id'=>$id)), array('catalog_id'=>$id));
 		$mcform = new local_catalog_editcourse_mcs(new moodle_url($returnurl, array('action' => 'addmc', 'catalog_id'=>$id)), array('catalog_id'=>$id));
-
+		$editionform = new local_catalog_course_editions(new moodle_url($returnurl, array('action' => 'addedition', 'catalog_id'=>$id)), array('catalog_id'=>$id));
 		$data = new stdClass();
 		$data->url = new moodle_url($returnurl);
 		$data->sesskey=sesskey();
@@ -215,6 +226,10 @@ if($displayedit){
         $data->mcform = $mcform->render();
         $data->course_mcs = local_catalog_get_course_microcredentials($id);
         if(count($data->course_mcs)>0)$data->hasmcs = true;
+
+        $data->editions = local_catalog_get_course_editions($id);
+        if(count($data->editions)>0)$data->haseditions = true;
+        $data->editionform = $editionform->render();
 		echo $OUTPUT->render_from_template('local_catalog/courses_edit', $data);
 }
 

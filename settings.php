@@ -25,8 +25,12 @@
 */
 defined('MOODLE_INTERNAL') || die;
 global $CFG, $PAGE;
-	$page = new admin_settingpage('catalog', get_string('pluginname', 'local_catalog'));
-    $page->add(new admin_setting_heading('local_catalog_setup', get_string('catalogsetup', 'local_catalog'), get_string('catalogsetup_desc', 'local_catalog', $CFG->wwwroot.'/local/catalog/setup.php')));
-    $page->add(new admin_setting_heading('local_catalog_course_setup', get_string('coursepagesetup', 'local_catalog'), get_string('coursepagesetup_desc', 'local_catalog', $CFG->wwwroot.'/local/catalog/course_setup.php')));
-$ADMIN->add('localplugins', $page);
+
+
+
+    $ADMIN->add('localplugins', new admin_category('local_catalog', get_string('pluginname', 'local_catalog')));
+$ADMIN->add('local_catalog', new admin_externalpage('local_catalog_setup',  get_string('catalogsetup', 'local_catalog'),
+        $CFG->wwwroot.'/local/catalog/setup.php'));
+$ADMIN->add('local_catalog', new admin_externalpage('local_catalog_course_setup',  get_string('coursepagesetup', 'local_catalog'),
+        $CFG->wwwroot.'/local/catalog/course_setup.php'));
 ?>

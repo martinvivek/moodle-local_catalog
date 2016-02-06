@@ -242,3 +242,23 @@ class local_catalog_editcourse_mcs extends moodleform{
                 $this->add_action_buttons();
         }
 }
+
+class local_catalog_course_editions extends moodleform{
+        public function definition(){
+                $mform = $this->_form; // Don't forget the underscore! 
+
+                if (isset($this->_customdata['catalog_id']) && is_object($this->_customdata['catalog_id'])) {
+                        $catalog_id = $this->_customdata['catalog_id'];
+                }
+
+                $mform->addElement('text', 'label', get_string('label'), array('style'=>'width: 100%')); // Add elements to your form
+                $mform->setType('label', PARAM_TEXT);                   //Set type of element
+                $mform->addRule('label', get_string('required'), 'required', null, 'client');
+                $mform->addRule('label', get_string('maximumchars', '', 64), 'maxlength', 64, 'client');
+
+                $mform->addElement('select', 'course_id', get_string('course'), local_catalog_get_all_moodle_courses(),  array('style'=>'width: 100%'));
+                $mform->addRule('course_id', get_string('required'), 'required', null, 'client');
+
+                $this->add_action_buttons();
+        }
+}
