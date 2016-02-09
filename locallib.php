@@ -172,22 +172,62 @@ function local_catalog_delete_page($id) {
     return $result;
 }
 
-function local_catalog_get_pages(){
+function local_catalog_get_pages($extended = true, $keytype="SEQUENTIAL"){
 	global $DB;
+	$keytype = strtolower($keytype);
 	$entry_list = $DB->get_records('local_catalog_pages', null, 'name');
 
 	$entries = array();
 	$i=0;
 	foreach($entry_list as $e){
-		$entries[$i]['id'] = $e->id;
-		$entries[$i]['name'] = $e->name;
-		$entries[$i]['fa_icon'] = $e->fa_icon;
-		$entries[$i]['template'] = $e->template;
-		$entries[$i]['count'] = $DB->count_records('local_catalog_course_pages', array('page_id'=>$e->id));
+		if($keytype=="id")$key = $e->id;
+		else $key = $i;
+		if($extended){
+			$entries[$key]['id'] = $e->id;
+			$entries[$key]['name'] = $e->name;
+			$entries[$key]['fa_icon'] = $e->fa_icon;
+			$entries[$key]['template'] = $e->template;
+			$entries[$key]['count'] = $DB->count_records('local_catalog_course_pages', array('page_id'=>$e->id));
+		}
+		else{
+			$entries[$e->id] = $e->name;
+		}
 		$i++;
 	}
 	return $entries;
 
+}
+
+function local_catalog_get_course_pages($catalog_id){
+	global $DB;
+	$list = local_catalog_get_pages(true, "id");
+	$records = $DB->get_records('local_catalog_course_pages', array('catalog_id'=>$catalog_id));
+
+	$pages = array();
+	$i=0;
+	foreach($records as $r){
+		$pages[$i]['id'] = $r->id;
+		$pages[$i]['page_id'] = $r->page_id;
+		$pages[$i]['name'] = $list[$r->page_id]['name'];
+		$pages[$i]['fa_icon'] = $list[$r->page_id]['fa_icon'];
+		if(strlen($r->content)==0){
+			$pages[$i]['uses_template'] = true;
+			$pages[$i]['content'] = $list[$r->page_id]['template'];
+		}
+		else{
+			$pages[$i]['uses_template'] = false;
+			$pages[$i]['content'] = $r->content;
+		}
+		$i++;
+	}
+	return $pages;
+}
+
+function local_catalog_add_course_pages($data){
+	global $DB;
+	$data->sequence = $DB->count_records('local_catalog_course_pages', array('catalog_id'=>$data->catalog_id))+1;
+    $id = $DB->insert_record('local_catalog_course_pages', $data);
+    return $id;
 }
 
 

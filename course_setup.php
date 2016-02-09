@@ -197,6 +197,18 @@ if($action=="mcdel"){
 	$displayedit = true;
 }
 
+if($action=="addpages"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	confirm_sesskey();
+	$addform =  new local_catalog_course_static_page_add(new moodle_url($returnurl, array('action' => 'addpages', 'catalog_id'=>$catalog_id)), array('catalog_id'=>$catalog_id));
+	if($formdata = $addform->get_data()){
+		$formdata->catalog_id = $catalog_id;
+		local_catalog_add_course_pages($formdata);
+	}
+	$displayindex = false;
+	$displayedit = true;
+}
+
 if($displayindex){
 		$data = new stdClass();
 		$data->returnurl = new moodle_url($returnurl);
@@ -225,6 +237,8 @@ if($displayedit){
 		$metaform = new local_catalog_coursemeta(new moodle_url($returnurl, array('action' => $addmeta, 'catalog_id'=>$id)), array('catalog_id'=>$id));
 		$mcform = new local_catalog_editcourse_mcs(new moodle_url($returnurl, array('action' => 'addmc', 'catalog_id'=>$id)), array('catalog_id'=>$id));
 		$editionform = new local_catalog_course_editions(new moodle_url($returnurl, array('action' => 'addedition', 'catalog_id'=>$id)), array('catalog_id'=>$id));
+		$addpagesform = new local_catalog_course_static_page_add(new moodle_url($returnurl, array('action' => 'addpages', 'catalog_id'=>$id)), array('catalog_id'=>$id));
+
 		$data = new stdClass();
 		$data->url = new moodle_url($returnurl);
 		$data->sesskey=sesskey();
@@ -262,6 +276,8 @@ if($displayedit){
    	       	$data->editions[0]['first'] = true;
 	       	$data->editions[count($data->editions)-1]['last'] = true;
         }
+
+        $data->addpagesform = $addpagesform->render();
 		echo $OUTPUT->render_from_template('local_catalog/courses_edit', $data);
 }
 

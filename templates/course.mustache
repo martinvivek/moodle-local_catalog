@@ -39,6 +39,25 @@
 				</div>
 			</div>
 		{{/hasobjectives}}
+		{{#haspages}}
+			<div class="row">
+				<div class="col-xs-12">
+						<h3>{{#str}}learnmore, local_catalog{{/str}}</h3>
+					  <ul class="nav nav-pills" role="tablist">
+					  	{{#pages}}
+					    <li role="presentation"><a href="#page-{{id}}" aria-controls="page-{{id}}" role="tab" data-toggle="tab"><i class="fa fa-fw fa-{{fa_icon}}"></i>{{name}}</a></li>
+					    {{/pages}}
+  						</ul>
+  						<div class="tab-content" id="local_catalog_pages">
+  							{{#pages}}
+  								<div role="tabpanel" class="tab-pane" id="page-{{id}}">
+  									{{{content}}}
+  								</div>
+  							{{/pages}}
+  						</div>
+				</div>
+			</div>
+		{{/haspages}}
 	</div>
 	<div class="col-xs-12 col-md-4">
 		{{#has_metadata}}
@@ -77,7 +96,7 @@
 			</div>
 		{{/has_metadata}}
 		{{#hasmcs}}
-			<h3>{{#str}}availablemicrocredentials, local_catalog{{/str}} (<small><a href="{{wwwroot}}/course/view.php?id={{mccourse}}">{{#str}}mclearnmore, local_catalog{{/str}}</a></small>)</h3>
+			<h3>{{#str}}availablemicrocredentials, local_catalog{{/str}} (<small><a href="{{wwwroot}}/course/view.php?id={{mccourse}}">{{#str}}learnmore, local_catalog{{/str}}</a></small>)</h3>
 			<table class="table table-condensed table-striped table-responsive">
 				{{#mcs}}
 					<tr>

@@ -262,3 +262,18 @@ class local_catalog_course_editions extends moodleform{
                 $this->add_action_buttons();
         }
 }
+
+class local_catalog_course_static_page_add extends moodleform{
+            public function definition(){
+                $mform = $this->_form; // Don't forget the underscore! 
+
+                if (isset($this->_customdata['catalog_id']) && is_object($this->_customdata['catalog_id'])) {
+                        $catalog_id = $this->_customdata['catalog_id'];
+                }
+
+                $mform->addElement('select', 'page_id', get_string('course'), local_catalog_get_pages(false),  array('style'=>'width: 100%'));
+                $mform->addRule('page_id', get_string('required'), 'required', null, 'client');
+
+                $this->add_action_buttons();
+        }    
+}

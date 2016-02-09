@@ -51,7 +51,8 @@ $string['value'] = "Value";
 $string['coursemicrocredentials'] = "Course Micro-credentials";
 $string['availablemicrocredentials'] = "Micro-credentials";
 $string['label'] = "Label";
-$string['mclearnmore'] = "Learn More";
+$string['learnmore'] = "Learn More";
+$string['coursestaticpages'] = "Course Static Pages";
 
 
 $string['coursesetup'] = "Course Setup";

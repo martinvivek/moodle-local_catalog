@@ -82,6 +82,11 @@ if(count($data->editions)>0){
 	$data->editionlabel = $detail['multi_course_label'];
 }
 
+$data->pages = local_catalog_get_course_pages($id);
+if(count($data->pages)>0){
+	$data->haspages = true;
+}
+
 echo $OUTPUT->render_from_template('local_catalog/course', $data);
 
 ?>
