@@ -49,6 +49,7 @@ $data->header = $OUTPUT->header();
 $data->heading =  $OUTPUT->heading($detail['name']);
 $data->footer = $OUTPUT->footer();
 
+$data->catalogid = $id;
 $data->coursetitle = $detail['name'];
 if(strlen($detail['subtitle'])>0)$data->subtitle = $detail['subtitle'];
 $data->preview_video_id = $detail['preview_video_id'];

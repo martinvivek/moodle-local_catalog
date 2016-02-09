@@ -22,8 +22,12 @@ table.table.table-condensed {
     border: 1px solid #f5f5f5;
 }
 
+#enrolblock{
+	text-align: center;
+}
+
 @media (max-width: 767px) { 
-  	.btn.btn-block.btn-large.btn-enrol{
+  	#enrolblock{
   		margin-bottom: 10px;
   	}
 }

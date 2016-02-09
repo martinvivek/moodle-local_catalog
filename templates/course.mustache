@@ -6,8 +6,18 @@
 			<h1 class="catalog-title">{{coursetitle}}{{#subtitle}}:{{/subtitle}}</h1>
 			{{#subtitle}}<h2 class="catalog-subtitle">{{.}}</h2>{{/subtitle}}
 		</div>
-		<div class="col-xs-12 col-md-4">
-			<a class="btn btn-block btn-large btn-enrol" href="{{{enrol_url}}}">Enroll now!</a>
+		<div class="col-xs-12 col-md-4" id="enrolblock">
+			<a class="btn btn-block btn-large btn-enrol" href="{{{enrol_url}}}">Enroll now!</a><br/>
+			<!-- Twitter -->
+			<a href="http://twitter.com/home?status={{#str}}twittershare, local_catalog, {{coursetitle}}{{/str}} {{wwwroot}}/local/catalog/course.php?id={{catalogid}}&utm_source=twitter&utm_medium=catalog&utm_campaign=catalog" title="Share on Twitter" target="_blank" class="btn btn-twitter"><i class="fa fa-fw fa-twitter"></i></a>
+			 <!-- Facebook -->
+			<a href="https://www.facebook.com/sharer/sharer.php?u={{wwwroot}}/local/catalog/course.php?id={{catalogid}}&utm_source=facebook&utm_medium=catalog&utm_campaign=catalog" title="Share on Facebook" target="_blank" class="btn btn-facebook"><span class="fa fa-fw fa-facebook"></span></a>
+			<!-- Google+ -->
+			<a href="https://plus.google.com/share?url={{wwwroot}}/local/catalog/course.php?id={{catalogid}}&utm_source=googleplus&utm_medium=catalog&utm_campaign=catalog" title="Share on Google+" target="_blank" class="btn btn-google"><span class="fa fa-fw fa-google-plus"></span></a>
+			<!-- LinkedIn --> 
+			<a href="http://www.linkedin.com/shareArticle?mini=true&url={{wwwroot}}/local/catalog/course.php?id={{catalogid}}&amp;utm_source=linkedin&amp;utm_medium=catalog&amp;utm_campaign=catalog&title={{#str}}linkedinshare,local_catalog,{{coursetitle}}{{/str}}" title="Share on LinkedIn" target="_blank" class="btn btn-linkedin"><span class="fa fa-fw fa-linkedin"></span></a>
+
+
 		</div>
 	{{/enrol_open}}
 	{{^enrol_open}}
