@@ -170,6 +170,32 @@ function xmldb_local_catalog_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2016020300, 'local', 'catalog');
     }
 
+    if ($oldversion < 2016021000) {
+
+        // Define field sequence to be added to local_catalog_course_pages.
+        $table = new xmldb_table('local_catalog_course_pages');
+        $field = new xmldb_field('sequence', XMLDB_TYPE_INTEGER, '11', null, null, null, null, 'content');
+
+        // Conditionally launch add field sequence.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+                // Define field use_template to be added to local_catalog_course_pages.
+        $table = new xmldb_table('local_catalog_course_pages');
+        $field = new xmldb_field('use_template', XMLDB_TYPE_INTEGER, '1', null, null, null, '1', 'page_id');
+
+        // Conditionally launch add field use_template.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+
+        // Catalog savepoint reached.
+        upgrade_plugin_savepoint(true, 2016021000, 'local', 'catalog');
+    }
+
+
      
     /*
      * And that's all. Please, examine and understand the 3 example blocks above. Also
