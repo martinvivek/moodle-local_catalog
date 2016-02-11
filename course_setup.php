@@ -294,7 +294,6 @@ if($displayedit){
 		$addpagesform = new local_catalog_course_static_page_add(new moodle_url($returnurl, array('action' => 'addpages', 'catalog_id'=>$id)), array('catalog_id'=>$id));
 
 		$data = new stdClass();
-		$data->url = new moodle_url($returnurl);
 		$data->sesskey=sesskey();
 		$data->deleteicon = html_writer::empty_tag('img', array('src'=>$OUTPUT->pix_url('t/delete'), 'alt'=>get_string('delete'), 'class'=>'iconsmall'));
 		$data->editicon = html_writer::empty_tag('img', array('src'=>$OUTPUT->pix_url('i/edit'), 'alt'=>get_string('edit'), 'class'=>'iconsmall'));
@@ -311,9 +310,9 @@ if($displayedit){
         $data->metaform = $metaform->render();
         $data->catalog_id = $id;
         $data->metadata = local_catalog_get_course_metadata($id);
-       	$data->metadata[0]['first'] = true;
-       	$data->metadata[count($data->metadata)-1]['last'] = true;
         if(count($data->metadata)>0){
+        	$data->metadata[0]['first'] = true;
+       		$data->metadata[count($data->metadata)-1]['last'] = true;
         	$data->hasmeta = true;
         	foreach($data->metadata as $key=>$elem){
         		if($elem['datatype']=="list")$data->metadata[$key]['islist']=true;
@@ -323,10 +322,10 @@ if($displayedit){
         $data->course_mcs = local_catalog_get_course_microcredentials($id);
         if(count($data->course_mcs)>0)$data->hasmcs = true;
 
+		$data->editionform = $editionform->render();
         $data->editions = local_catalog_get_course_editions($id);
         if(count($data->editions)>0){
         	$data->haseditions = true;
-        	$data->editionform = $editionform->render();
    	       	$data->editions[0]['first'] = true;
 	       	$data->editions[count($data->editions)-1]['last'] = true;
         }

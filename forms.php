@@ -147,7 +147,7 @@ class local_catalog_editcourse extends moodleform{
                 $mform->addRule('name', get_string('required'), 'required', null, 'client');
                 $mform->addRule('name', get_string('maximumchars', '', 64), 'maxlength', 64, 'client');
 
-                $mform->addElement('text', 'subtitle', get_string('subtitle'), array('style'=>'width: 100%')); // Add elements to your form
+                $mform->addElement('text', 'subtitle', get_string('subtitle', 'local_catalog'), array('style'=>'width: 100%')); // Add elements to your form
                 $mform->setType('subtitle', PARAM_TEXT);                   //Set type of element
                 $mform->addRule('subtitle', get_string('maximumchars', '', 64), 'maxlength', 64, 'client');
 
@@ -169,7 +169,7 @@ class local_catalog_editcourse extends moodleform{
                 $mform->addElement('editor', 'description', get_string('description'));
                 $mform->setType('description', PARAM_RAW);
 
-                $mform->addElement('editor', 'objectives', get_string('objectives'));
+                $mform->addElement('editor', 'objectives', get_string('objectives','local_catalog'));
                 $mform->setType('objectives', PARAM_RAW);
 
                 $mform->addElement('text', 'thumbnail', get_string('thumbnail','local_catalog'), array('style'=>'width: 100%')); // Add elements to your form
@@ -199,10 +199,10 @@ class local_catalog_coursemeta extends moodleform{
                 foreach($metacategories as $m){
                         $catlist[$m['id']] = $m['name'];
                 }
-                $mform->addElement('select', 'metadata_id', get_string('entry'), $catlist,  array('style'=>'width: 100%'));
+                $mform->addElement('select', 'metadata_id', get_string('entry', 'local_catalog'), $catlist,  array('style'=>'width: 100%'));
                 $mform->addRule('metadata_id', get_string('required'), 'required', null, 'client');
 
-                $mform->addElement('text', 'value', get_string('value'), array('style'=>'width: 100%')); // Add elements to your form
+                $mform->addElement('text', 'value', get_string('value', 'local_catalog'), array('style'=>'width: 100%')); // Add elements to your form
                 $mform->addRule('value', get_string('maximumchars', '', 128), 'maxlength', 128, 'client');
                 $mform->addRule('value', get_string('required'), 'required', null, 'client');
 
@@ -236,7 +236,7 @@ class local_catalog_editcourse_mcs extends moodleform{
                 if (isset($this->_customdata['catalog_id']) && is_object($this->_customdata['catalog_id'])) {
                         $catalog_id = $this->_customdata['catalog_id'];
                 }
-                $mform->addElement('select', 'section_id', get_string('entry'), local_catalog_get_all_microcredentials('assoc'),  array('style'=>'width: 100%'));
+                $mform->addElement('select', 'section_id', get_string('entry', 'local_catalog'), local_catalog_get_all_microcredentials('assoc'),  array('style'=>'width: 100%'));
                 $mform->addRule('section_id', get_string('required'), 'required', null, 'client');
 
                 $this->add_action_buttons();
@@ -251,7 +251,7 @@ class local_catalog_course_editions extends moodleform{
                         $catalog_id = $this->_customdata['catalog_id'];
                 }
 
-                $mform->addElement('text', 'label', get_string('label'), array('style'=>'width: 100%')); // Add elements to your form
+                $mform->addElement('text', 'label', get_string('label', 'local_catalog'), array('style'=>'width: 100%')); // Add elements to your form
                 $mform->setType('label', PARAM_TEXT);                   //Set type of element
                 $mform->addRule('label', get_string('required'), 'required', null, 'client');
                 $mform->addRule('label', get_string('maximumchars', '', 64), 'maxlength', 64, 'client');
@@ -271,7 +271,7 @@ class local_catalog_course_static_page_add extends moodleform{
                         $catalog_id = $this->_customdata['catalog_id'];
                 }
 
-                $mform->addElement('select', 'page_id', get_string('course'), local_catalog_get_pages(false),  array('style'=>'width: 100%'));
+                $mform->addElement('select', 'page_id', get_string('page'), local_catalog_get_pages(false),  array('style'=>'width: 100%'));
                 $mform->addRule('page_id', get_string('required'), 'required', null, 'client');
 
                 $this->add_action_buttons();

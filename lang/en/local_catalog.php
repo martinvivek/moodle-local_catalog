@@ -31,7 +31,7 @@ $string['pluginname']  = 'Course Catalog';
 $string['catalogsetup'] = "Catalog Setup";
 //Setup
 $string['metadatasetup'] = "Set Up Metadata Categories";
-$string['coursepagesetup'] = "Course Setup";
+$string['coursepagesetup'] = "Course Page Setup";
 $string['edit_metadata_entry'] = "Edit Metadata Entry";
 $string['course_metadata'] = "Course Metadata";
 $string['edit_page'] = "Edit Page";
