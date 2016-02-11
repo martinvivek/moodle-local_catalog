@@ -277,3 +277,24 @@ class local_catalog_course_static_page_add extends moodleform{
                 $this->add_action_buttons();
         }    
 }
+
+class local_catalog_course_page_edit extends moodleform{
+        public function definition(){
+            $mform = $this->_form; // Don't forget the underscore! 
+
+            if (isset($this->_customdata['record']) && is_object($this->_customdata['record'])) {
+                    $data = $this->_customdata['record'];
+            }
+    
+            $mform->addElement('advcheckbox', 'use_template', get_string('use_template', 'local_catalog'), '', array('group' => 1), array(0, 1));
+            $content = $mform->addElement('editor', 'content', get_string('content'));
+            $mform->setType('content', PARAM_RAW);
+            $mform->disabledIf('content', 'use_template', 'eq', '1');
+            $this->add_action_buttons();
+
+            if (isset($data)) {
+                $this->set_data($data);
+                $content->setValue(array('text' => $data->content));
+            }
+        }
+}

@@ -83,5 +83,21 @@
 	{{{editionform}}}
 
 	<h3>{{#str}}coursestaticpages, local_catalog{{/str}}</h3>
+	{{#haspages}}
+		<table class="table table-striped">
+			{{#pages}}
+				<tr>
+					<td>
+						<a target="_blank" href="{{{returnurl}}}?action=pageedit&pageid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{editicon}}}</a>
+						<a href="{{{returnurl}}}?action=pagedel&pageid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{deleteicon}}}</a>
+						{{^first}}<a href="{{{returnurl}}}?action=pageup&pageid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{upicon}}}</a>{{/first}}
+						{{^last}}<a href="{{{returnurl}}}?action=pagedown&pageid={{id}}&catalog_id={{catalog_id}}&sesskey={{{sesskey}}}">{{{downicon}}}</a>{{/last}}
+					
+					</td>
+					<td>{{name}}</td>
+				</tr>
+			{{/pages}}
+		</table>
+	{{/haspages}}
 	{{{addpagesform}}}
 {{{footer}}}

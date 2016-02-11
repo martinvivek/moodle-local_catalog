@@ -209,6 +209,60 @@ if($action=="addpages"){
 	$displayedit = true;
 }
 
+if($action=="pagedel"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	$pageid = required_param('pageid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_delete_course_page($pageid, $catalog_id);
+	$displayindex = false;
+	$displayedit = true;
+}
+
+if($action=="pageedit"){
+	$pageid = required_param('pageid',PARAM_INT);
+	confirm_sesskey();
+	$record = $DB->get_record('local_catalog_course_pages', array('id'=>$pageid), '*', MUST_EXIST);
+	$catalog_name = $DB->get_field('local_catalog','name',array('id'=>$record->catalog_id));
+	$page_name = $DB->get_field('local_catalog_pages','name',array('id'=>$record->page_id));
+	$PAGE->navbar->add($catalog_name, new moodle_url('/local/catalog/course_setup.php', array('id'=>$record->catalog_id, 'action'=>'editcourse')), global_navigation::TYPE_CUSTOM);
+	$pageform = new local_catalog_course_page_edit(new moodle_url($returnurl, array('action' => 'pageedit', 'pageid'=>$record->id)), array('record'=>$record));
+
+	if($formdata = $pageform->get_data()){
+		$formdata->id = $pageid;
+		$formdata->content = $formdata->content['text'];
+		local_catalog_edit_course_page($formdata);
+	}
+
+	$data = new stdClass();
+	$data->returnurl = new moodle_url($returnurl);
+	$data->sesskey=sesskey();
+	$data->header = $OUTPUT->header();
+	$data->heading =  $OUTPUT->heading($page_name);
+	$data->footer = $OUTPUT->footer();
+	$data->form = $pageform->render();
+	echo $OUTPUT->render_from_template('local_catalog/displayform', $data);
+	$displayindex = false;
+	$displayedit = false;
+}
+
+if($action=="pagedown"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	$pageid = required_param('pageid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_move_course_page("down", $pageid, $catalog_id);
+	$displayindex = false;
+	$displayedit = true;
+}
+
+if($action=="pageup"){
+	$catalog_id = required_param('catalog_id',PARAM_INT);
+	$pageid = required_param('pageid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_move_course_page("up", $pageid, $catalog_id);
+	$displayindex = false;
+	$displayedit = true;
+}
+
 if($displayindex){
 		$data = new stdClass();
 		$data->returnurl = new moodle_url($returnurl);
@@ -276,6 +330,13 @@ if($displayedit){
    	       	$data->editions[0]['first'] = true;
 	       	$data->editions[count($data->editions)-1]['last'] = true;
         }
+
+        $data->pages = local_catalog_get_course_pages($id);
+		if(count($data->pages)>0){
+			$data->pages[0]['first'] = true;
+	       	$data->pages[count($data->pages)-1]['last'] = true;
+			$data->haspages = true;
+		}
 
         $data->addpagesform = $addpagesform->render();
 		echo $OUTPUT->render_from_template('local_catalog/courses_edit', $data);

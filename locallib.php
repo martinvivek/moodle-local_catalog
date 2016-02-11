@@ -201,7 +201,7 @@ function local_catalog_get_pages($extended = true, $keytype="SEQUENTIAL"){
 function local_catalog_get_course_pages($catalog_id){
 	global $DB;
 	$list = local_catalog_get_pages(true, "id");
-	$records = $DB->get_records('local_catalog_course_pages', array('catalog_id'=>$catalog_id));
+	$records = $DB->get_records('local_catalog_course_pages', array('catalog_id'=>$catalog_id), 'sequence');
 
 	$pages = array();
 	$i=0;
@@ -210,12 +210,12 @@ function local_catalog_get_course_pages($catalog_id){
 		$pages[$i]['page_id'] = $r->page_id;
 		$pages[$i]['name'] = $list[$r->page_id]['name'];
 		$pages[$i]['fa_icon'] = $list[$r->page_id]['fa_icon'];
-		if(strlen($r->content)==0){
-			$pages[$i]['uses_template'] = true;
+		if($r->use_template == 1){
+			$pages[$i]['use_template'] = true;
 			$pages[$i]['content'] = $list[$r->page_id]['template'];
 		}
 		else{
-			$pages[$i]['uses_template'] = false;
+			$pages[$i]['use_template'] = false;
 			$pages[$i]['content'] = $r->content;
 		}
 		$i++;
@@ -228,6 +228,52 @@ function local_catalog_add_course_pages($data){
 	$data->sequence = $DB->count_records('local_catalog_course_pages', array('catalog_id'=>$data->catalog_id))+1;
     $id = $DB->insert_record('local_catalog_course_pages', $data);
     return $id;
+}
+
+function local_catalog_edit_course_page($data){
+	global $DB;
+	return $DB->update_record('local_catalog_course_pages', $data);
+}
+
+function local_catalog_move_course_page($direction, $id, $catalog_id){
+	global $DB;
+	$direction = strtolower($direction);
+	if($direction!="down"&&$direction!="up")return false;
+
+	$sequence = $DB->get_field('local_catalog_course_pages','sequence',array('id'=>$id), MUST_EXIST);	
+
+	if($direction=="up") $newseq = $sequence - 1;
+	if($direction=="down")$newseq = $sequence + 1;
+	$switch = $DB->get_field('local_catalog_course_pages','id',array('catalog_id'=>$catalog_id, 'sequence'=>$newseq), MUST_EXIST);
+
+    $obj = new StdClass();
+	$obj->id = $id;
+	$obj->sequence = $newseq;
+	$DB->update_record('local_catalog_course_pages',$obj);
+
+    $obj = new StdClass();
+	$obj->id = $switch;
+	$obj->sequence = $sequence;
+	$DB->update_record('local_catalog_course_pages',$obj);
+
+}
+
+function local_catalog_delete_course_page($id, $catalog_id){
+	global $DB;
+    $result = $DB->delete_records('local_catalog_course_pages', array('id'=>$id, 'catalog_id'=>$catalog_id));
+    if($result==false)return $result;
+
+    $meta = $DB->get_records('local_catalog_course_pages', array('catalog_id'=>$catalog_id), 'sequence');
+    $i=1;
+    foreach($meta as $m){
+    	$obj = new StdClass();
+    	$obj->id = $m->id;
+    	$obj->sequence = $i;
+    	$DB->update_record('local_catalog_course_pages',$obj);
+    	unset($obj);
+    	$i++;
+    }
+    return;
 }
 
 

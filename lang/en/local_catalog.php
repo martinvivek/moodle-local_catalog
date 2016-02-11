@@ -55,5 +55,6 @@ $string['learnmore'] = "Learn More";
 $string['coursestaticpages'] = "Course Static Pages";
 $string['twittershare'] = 'Check out {$a} via @fridayinstitute';
 $string['linkedinshare'] = 'Check out {$a} via the Friday Institute for Educational Innovation at NC State University';
+$string['use_template'] = 'Use Template';
 
 $string['coursesetup'] = "Course Setup";
