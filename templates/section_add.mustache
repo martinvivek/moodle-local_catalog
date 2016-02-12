@@ -1,0 +1,27 @@
+{{{header}}}
+{{{heading}}}
+
+	{{#has_courses}}
+		<table class="table table-striped">
+			<tr>
+				<th></th>
+				<th>{{#str}}name{{/str}}</th>
+			</tr>
+			{{#courselist}}
+				<tr>
+					<td>
+						<a href="{{{url}}}?action=editsection&id={{id}}">{{{editicon}}}</a>
+							&nbsp;<a href="{{{url}}}?action=deletesection&id={{id}}&sesskey={{{sesskey}}}" onClick="return confirm('Are you sure you want to delete this section?');">{{{deleteicon}}}</a>
+						{{^first}}<a href="{{{returnurl}}}?action=sectionup&id={{id}}&sesskey={{{sesskey}}}">{{{upicon}}}</a>{{/first}}
+						{{^last}}<a href="{{{returnurl}}}?action=sectiondown&id={{id}}&sesskey={{{sesskey}}}">{{{downicon}}}</a>{{/last}}
+					</td>
+					<td>{{name}}</td>
+				</tr>
+			{{/courselist}}
+		</table>
+
+	{{/has_courses}}
+
+	{{{addform}}}
+
+{{{footer}}}

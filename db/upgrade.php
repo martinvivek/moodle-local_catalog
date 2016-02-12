@@ -196,6 +196,47 @@ function xmldb_local_catalog_upgrade($oldversion) {
     }
 
 
+    if ($oldversion < 2016021100) {
+
+        // Define field sequence to be added to local_catalog_course_pages.
+        $table = new xmldb_table('local_catalog_sections');
+        $field = new xmldb_field('sequence', XMLDB_TYPE_INTEGER, '11', null, null, null, null, null);
+
+        // Conditionally launch add field sequence.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Catalog savepoint reached.
+        upgrade_plugin_savepoint(true, 2016021100, 'local', 'catalog');
+    }
+
+
+    if ($oldversion < 2016021101) {
+
+        // Define field footer to be added to local_catalog_sections.
+        $table = new xmldb_table('local_catalog_sections');
+        $field = new xmldb_field('footer', XMLDB_TYPE_TEXT, null, null, null, null, null, 'header');
+
+        // Conditionally launch add field footer.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+                // Define field video to be added to local_catalog_sections.
+        $table = new xmldb_table('local_catalog_sections');
+        $field = new xmldb_field('video', XMLDB_TYPE_CHAR, '32', null, null, null, null, 'footer');
+
+        // Conditionally launch add field video.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Catalog savepoint reached.
+        upgrade_plugin_savepoint(true, 2016021101, 'local', 'catalog');
+    }
+
+
      
     /*
      * And that's all. Please, examine and understand the 3 example blocks above. Also

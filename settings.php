@@ -33,4 +33,6 @@ $ADMIN->add('local_catalog', new admin_externalpage('local_catalog_setup',  get_
         $CFG->wwwroot.'/local/catalog/setup.php'));
 $ADMIN->add('local_catalog', new admin_externalpage('local_catalog_course_setup',  get_string('coursepagesetup', 'local_catalog'),
         $CFG->wwwroot.'/local/catalog/course_setup.php'));
+$ADMIN->add('local_catalog', new admin_externalpage('local_catalog_section_setup',  get_string('sectionsetup', 'local_catalog'),
+        $CFG->wwwroot.'/local/catalog/section_setup.php'));
 ?>
