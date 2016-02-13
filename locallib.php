@@ -310,22 +310,24 @@ function get_course_detail($id){
 }
 
 
-function local_catalog_get_courses(){
+function local_catalog_get_courses($keytype="sequential"){
 	global $DB;
+	$keytype = strtolower($keytype);
 	$i=0;
 	$entries = array();
 	$entry_list = $DB->get_records('local_catalog', null, 'name');
 	$i=0;
 	foreach($entry_list as $e){
-		$entries[$i]['id'] = $e->id;
-		$entries[$i]['name'] = $e->name;
-		$entries[$i]['preview_video_id'] = $e->preview_video_id;
-		$entries[$i]['description'] = $e->description;
-		$entries[$i]['thumbnail'] = $e->thumbnail;
-		$entries[$i]['multi_course_label'] = $e->multi_course_label;
-		$entries[$i]['enrol_course_id'] = $e->enrol_course_id;
-		$entries[$i]['enrol_open'] = $e->enrol_open;
-		if(isset($metadata[$e->id]))$entries[$i]['metadata'] = $metadata[$e->id];
+		if($keytype=="id")$key = $e->id;
+		else $key = $i;
+		$entries[$key]['id'] = $e->id;
+		$entries[$key]['name'] = $e->name;
+		$entries[$key]['preview_video_id'] = $e->preview_video_id;
+		$entries[$key]['description'] = $e->description;
+		$entries[$key]['thumbnail'] = $e->thumbnail;
+		$entries[$key]['multi_course_label'] = $e->multi_course_label;
+		$entries[$key]['enrol_course_id'] = $e->enrol_course_id;
+		$entries[$key]['enrol_open'] = $e->enrol_open;
 		$i++;
 	}
 	return $entries;
@@ -524,8 +526,14 @@ function local_catalog_get_course_editions($catalog_id, $keytype="SEQUENTIAL"){
 function local_catalog_add_section($data) {
     global $DB;
     $data->sequence = $DB->count_records('local_catalog_sections')+1;
+    $data->enabled = 0;
     $id = $DB->insert_record('local_catalog_sections', $data);
     return $id;
+}
+
+function local_catalog_update_section($data){
+	global $DB;
+	return $DB->update_record('local_catalog_sections', $data);
 }
 
 function local_catalog_delete_section($id){
@@ -557,6 +565,52 @@ function local_catalog_move_section($direction, $id){
 
 }
 
+function local_catalog_section_course_add($data) {
+    global $DB;
+    $data->sequence = $DB->count_records('local_catalog_section_course', array('catalog_section_id'=>$data->catalog_section_id))+1;
+    $id = $DB->insert_record('local_catalog_section_course', $data);
+    return $id;
+}
+
+function local_catalog_section_course_delete($id, $section_id){
+	global $DB;
+	$result = $DB->delete_records('local_catalog_section_course', array('id'=>$id, 'catalog_section_id'=>$section_id));
+    if($result==false)return $result;
+
+    $meta = $DB->get_records('local_catalog_section_course', array('catalog_section_id'=>$section_id), 'sequence');
+    $i=1;
+    foreach($meta as $m){
+    	$obj = new StdClass();
+    	$obj->id = $m->id;
+    	$obj->sequence = $i;
+    	$DB->update_record('local_catalog_section_course',$obj);
+    	unset($obj);
+    	$i++;
+    }
+    return;
+}
+
+function local_catalog_section_course_move($direction, $id, $section_id){
+	global $DB;
+	$direction = strtolower($direction);
+	if($direction!="down"&&$direction!="up")return false;
+
+	$sequence = $DB->get_field('local_catalog_section_course','sequence',array('id'=>$id), MUST_EXIST);	
+
+	if($direction=="up") $newseq = $sequence - 1;
+	if($direction=="down")$newseq = $sequence + 1;
+	$switch = $DB->get_field('local_catalog_section_course','id',array('catalog_section_id'=>$section_id, 'sequence'=>$newseq), MUST_EXIST);
+
+    $obj = new StdClass();
+	$obj->id = $id;
+	$obj->sequence = $newseq;
+	$DB->update_record('local_catalog_section_course',$obj);
+
+    $obj = new StdClass();
+	$obj->id = $switch;
+	$obj->sequence = $sequence;
+	$DB->update_record('local_catalog_section_course',$obj);
+}
 
 function local_catalog_get_sections(){
 	global $DB;
@@ -576,5 +630,20 @@ function local_catalog_get_sections(){
 		$i++;
 	}
 	return $entries;
+}
 
+function local_catalog_get_section_courses($section_id){
+	global $DB;
+	$all = local_catalog_get_courses("id");
+	$res = $DB->get_records('local_catalog_section_course', array('catalog_section_id'=>$section_id), 'sequence');
+
+	$return = array();
+	$i=0;
+	foreach($res as $r){
+		$key = $i;
+		$return[$key] = $all[$r->catalog_id];
+		$return[$key]['local_catalog_section_course_id'] = $r->id;
+		$i++;
+	}
+	return $return;
 }

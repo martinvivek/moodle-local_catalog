@@ -57,5 +57,9 @@ $string['twittershare'] = 'Check out {$a} via @fridayinstitute';
 $string['linkedinshare'] = 'Check out {$a} via the Friday Institute for Educational Innovation at NC State University';
 $string['use_template'] = 'Use Template';
 $string['sectionsetup'] = "Section Setup";
+$string['tagline'] = "Tagline/Subtitle";
+$string['header'] = "Header";
+$string['footer'] = "Footer";
+$string['enabled'] = "Enabled";
 
 $string['coursesetup'] = "Course Setup";

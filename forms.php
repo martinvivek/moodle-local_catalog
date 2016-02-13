@@ -298,3 +298,59 @@ class local_catalog_course_page_edit extends moodleform{
             }
         }
 }
+
+class local_catalog_section_edit extends moodleform{
+    public function definition(){
+            $mform = $this->_form; // Don't forget the underscore! 
+
+            if (isset($this->_customdata['record']) && is_object($this->_customdata['record'])) {
+                    $data = $this->_customdata['record'];
+            }
+
+            $mform->addElement('text', 'name', get_string('name'), array('style'=>'width: 100%')); // Add elements to your form
+            $mform->setType('name', PARAM_TEXT);  
+            $mform->addRule('name', get_string('required'), 'required', null, 'client');
+
+            $mform->addElement('text', 'tagline', get_string('tagline', 'local_catalog'), array('style'=>'width: 100%')); // Add elements to your form
+            $mform->setType('tagline', PARAM_TEXT);     
+
+            $mform->addElement('text', 'video', get_string('youtube_id_preview_video', 'local_catalog'), array('style'=>'width: 100%')); // Add elements to your form
+            $mform->setType('video', PARAM_TEXT);   
+
+            $header = $mform->addElement('editor', 'header', get_string('header', 'local_catalog'));
+            $mform->setType('header', PARAM_RAW);
+
+            $footer = $mform->addElement('editor', 'footer', get_string('footer', 'local_catalog'));
+            $mform->setType('footer', PARAM_RAW);
+
+            $mform->addElement('advcheckbox', 'enabled', get_string('enabled', 'local_catalog'), '', array('group' => 1), array(0, 1));
+            $this->add_action_buttons();
+
+            if (isset($data)) {
+                $this->set_data($data);
+                $header->setValue(array('text' => $data->header));
+                $footer->setValue(array('text' => $data->footer));
+            }
+    }
+}
+
+class local_catalog_section_addcourse extends moodleform{
+    public function definition(){
+            $mform = $this->_form; // Don't forget the underscore! 
+
+            if (isset($this->_customdata['record']) && is_object($this->_customdata['record'])) {
+                    $data = $this->_customdata['record'];
+            }
+
+            $catalog_raw = local_catalog_get_courses();
+            $catalog = array();
+            foreach($catalog_raw as $c){
+                $catalog[$c['id']] = $c['name'];
+            }
+
+            $mform->addElement('select', 'catalog_id', get_string('course'), $catalog,  array('style'=>'width: 100%'));
+            $mform->addRule('catalog_id', get_string('required'), 'required', null, 'client');
+
+            $this->add_action_buttons();
+    }    
+}

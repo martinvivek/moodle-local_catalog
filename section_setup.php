@@ -29,11 +29,11 @@ require_once('forms.php');
 require_once('locallib.php');
 /// Security
 $systemcontext = context_system::instance();
-require_login();
-require_capability('moodle/site:config', $systemcontext);
 /// Build page
 $returnurl = $CFG->wwwroot.'/local/catalog/section_setup.php';
 $PAGE->set_url($returnurl);
+require_login();
+require_capability('moodle/site:config', $systemcontext);
 $PAGE->set_context($systemcontext);
 $PAGE->set_heading($SITE->fullname);
 //page layout
@@ -85,6 +85,62 @@ if($action=="sectiondown"){
 	$displayedit = false;
 }
 
+if($action=='editsection'){
+	$displayindex = false;
+	$displayedit = true;
+
+	$section_id = required_param('id', PARAM_INT);
+	$editform = new local_catalog_section_edit(new moodle_url($returnurl, array('action' => 'editsection', 'id'=>$section_id)));
+	if($formdata = $editform->get_data()){
+		confirm_sesskey();
+		$formdata->id = $section_id;
+		$formdata->header = $formdata->header['text'];
+		$formdata->footer = $formdata->footer['text'];
+		local_catalog_update_section($formdata);
+        $success = isset($inserted_id);
+	}
+	unset($editform);
+}
+
+if($action=='courseadd'){
+	$displayindex = false;
+	$displayedit = true;
+	$section_id = required_param('section_id', PARAM_INT);
+	$addform = new local_catalog_section_addcourse(new moodle_url($returnurl, array('action' => 'courseadd', 'section_id'=>$section_id)));
+	if($formdata = $addform->get_data()){
+		confirm_sesskey();
+		$formdata->catalog_section_id = $section_id;
+		local_catalog_section_course_add($formdata);
+	}
+}
+
+if($action=='coursedel'){
+	$displayindex = false;
+	$displayedit = true;
+	$section_id = required_param('section_id', PARAM_INT);
+	$cid = required_param('cid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_section_course_delete($cid, $section_id);
+}
+
+if($action=="coursedown"){
+	$section_id = required_param('section_id', PARAM_INT);
+	$cid = required_param('cid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_section_course_move("down", $cid, $section_id);
+	$displayindex = false;
+	$displayedit = true;
+}
+
+if($action=="courseup"){
+	$section_id = required_param('section_id', PARAM_INT);
+	$cid = required_param('cid',PARAM_INT);
+	confirm_sesskey();
+	local_catalog_section_course_move("up", $cid, $section_id);
+	$displayindex = false;
+	$displayedit = true;
+}
+
 if($displayindex){
 		$data = new stdClass();
 		$data->returnurl = new moodle_url($returnurl);
@@ -109,12 +165,12 @@ if($displayindex){
 }
 
 if($displayedit){
-	local_catalog_get_all_microcredentials();
-		if(isset($catalog_id))$id = $catalog_id;
+		if(isset($section_id))$id = $section_id;
 		else $id = required_param('id', PARAM_INT);
 
-		$record = $DB->get_record('local_catalog',array('id'=>$id), '*', MUST_EXIST);
-		$editform = new local_catalog_editcourse(new moodle_url($returnurl, array('action' => $saveedits, 'id'=>$id)), array('record'=>$record));
+		$record = $DB->get_record('local_catalog_sections',array('id'=>$id), '*', MUST_EXIST);
+		$editform = new local_catalog_section_edit(new moodle_url($returnurl, array('action' => 'editsection', 'id'=>$id)), array('record'=>$record));
+		$courseform = new local_catalog_section_addcourse(new moodle_url($returnurl, array('action' => 'courseadd', 'section_id'=>$id)));
 
 		$data = new stdClass();
 		$data->sesskey=sesskey();
@@ -123,14 +179,21 @@ if($displayedit){
 		$data->upicon = html_writer::empty_tag('img', array('src'=>$OUTPUT->pix_url('t/up'), 'alt'=>get_string('up'), 'class'=>'iconsmall'));
 		$data->downicon = html_writer::empty_tag('img', array('src'=>$OUTPUT->pix_url('t/down'), 'alt'=>get_string('down'), 'class'=>'iconsmall'));
 
-		$course = get_course_detail($id);
-		$PAGE->set_title($course['name']);
-		$PAGE->navbar->add($course['name'], new moodle_url('/local/catalog/course_setup.php', array('id'=>$id, 'action'=>'editcourse')), global_navigation::TYPE_CUSTOM);
+		$PAGE->set_title($record->name);
+		$PAGE->navbar->add($record->name, new moodle_url('/local/catalog/section_setup.php', array('id'=>$id, 'action'=>'editsection')), global_navigation::TYPE_CUSTOM);
         $data->header = $OUTPUT->header();
-        $data->heading =  $OUTPUT->heading($course['name']);
+        $data->heading =  $OUTPUT->heading($record->name);
         $data->footer = $OUTPUT->footer();
-
-		echo $OUTPUT->render_from_template('local_catalog/courses_edit', $data);
+        $data->editform = $editform->render();
+        $data->courseform = $courseform->render();
+        $data->courses = local_catalog_get_section_courses($id);
+        if(count($data->courses)>0){
+        	$data->hascourses = true;
+        	$data->courses[0]['first'] = true;
+        	$data->courses[count($data->courses)-1]['last'] = true;
+        }
+        $data->section_id = $id;
+		echo $OUTPUT->render_from_template('local_catalog/section_edit', $data);
 }
 
 ?>

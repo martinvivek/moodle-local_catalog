@@ -1,0 +1,25 @@
+{{{header}}}
+{{{heading}}}
+	<a href="section.php?id={{section_id}}">{{#str}}preview{{/str}}</a>
+
+	{{{editform}}}
+
+	<h3>{{#str}}courses{{/str}}</h3>
+	{{#hascourses}}
+		<table class="table table-striped">
+			{{#courses}}
+				<tr>
+					<td>
+
+						<a href="{{{returnurl}}}?action=coursedel&cid={{local_catalog_section_course_id}}&section_id={{section_id}}&sesskey={{{sesskey}}}">{{{deleteicon}}}</a>
+						{{^first}}<a href="{{{returnurl}}}?action=courseup&cid={{local_catalog_section_course_id}}&section_id={{section_id}}&sesskey={{{sesskey}}}">{{{upicon}}}</a>{{/first}}
+						{{^last}}<a href="{{{returnurl}}}?action=coursedown&cid={{local_catalog_section_course_id}}&section_id={{section_id}}&sesskey={{{sesskey}}}">{{{downicon}}}</a>{{/last}}
+					
+					</td>
+					<td>{{name}}</td>
+				</tr>
+			{{/courses}}
+		</table>
+	{{/hascourses}}
+	{{{courseform}}}
+{{{footer}}}
