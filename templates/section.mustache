@@ -1,0 +1,28 @@
+{{{header}}}
+<h2>{{name}}{{#tagline}}: {{.}}{{/tagline}}</h2>
+{{#video}}
+	<div class="row">
+		<div class="col-xs-12 col-md-6 col-md-offset-3">
+			<div class="embed-responsive embed-responsive-16by9 centered preview-video">
+			  <iframe class="embed-responsive-item" src="//www.youtube.com/embed/{{.}}?modestbranding=1&autohide=1&showinfo=0&rel=0" frameborder="0" allowfullscreen></iframe>
+		</div>
+	</div>
+{{/video}}
+{{#section_header}}
+	<div class="row" id="section-header">
+		<div class="col-xs-12">
+			{{{.}}}
+		</div>
+	</div>
+{{/section_header}}
+
+{{{courses}}}
+
+{{#section_footer}}
+	<div class="row" id="section-footer">
+		<div class="col-xs-12">
+			{{{.}}}
+		</div>
+	</div>
+{{/section_footer}}
+{{{footer}}}

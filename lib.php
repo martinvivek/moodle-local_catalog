@@ -1,0 +1,68 @@
+<?php
+
+function local_catalog_get_courses($keytype="sequential"){
+	global $DB;
+	$keytype = strtolower($keytype);
+	$i=0;
+	$entries = array();
+	$entry_list = $DB->get_records('local_catalog', null, 'name');
+	$i=0;
+	foreach($entry_list as $e){
+		if($keytype=="id")$key = $e->id;
+		else $key = $i;
+		$entries[$key]['id'] = $e->id;
+		$entries[$key]['name'] = $e->name;
+		$entries[$key]['preview_video_id'] = $e->preview_video_id;
+		$entries[$key]['description'] = $e->description;
+		$entries[$key]['thumbnail'] = $e->thumbnail;
+		$entries[$key]['multi_course_label'] = $e->multi_course_label;
+		$entries[$key]['enrol_course_id'] = $e->enrol_course_id;
+		$entries[$key]['enrol_open'] = $e->enrol_open;
+		$i++;
+	}
+	return $entries;
+
+}
+
+
+function local_catalog_get_section_courses($section_id){
+	global $DB;
+	$all = local_catalog_get_courses("id");
+	$res = $DB->get_records('local_catalog_section_course', array('catalog_section_id'=>$section_id), 'sequence');
+
+	$return = array();
+	$i=0;
+	foreach($res as $r){
+		$key = $i;
+		$return[$key] = $all[$r->catalog_id];
+		$return[$key]['local_catalog_section_course_id'] = $r->id;
+		$i++;
+	}
+	return $return;
+}
+
+function local_catalog_get_course_tiles($section_id){
+	global $OUTPUT;
+	global $CFG;
+	$courses = local_catalog_get_section_courses($section_id);
+	$cols = 4;
+	if(count($courses)%3==0)$cols=3;
+	if(count($courses)==5)$cols = 4;
+	if(count($courses)==2||count($courses)==4)$cols = 6;
+
+	$data = new stdClass();
+	foreach($courses as $c){
+		$cd = new stdClass();
+		$cd->name = $c['name'];
+		$cd->id = $c['id'];
+		$cd->thumbnail = $c['thumbnail'];
+		$cd->wwwroot = $CFG->wwwroot;
+		$cd->section_id = $section_id;
+		$data->courses[] = $OUTPUT->render_from_template('local_catalog/course_tile',$cd);
+	}
+	$data->wwwroot = $CFG->wwwroot;
+	$data->cols = $cols;
+	return $OUTPUT->render_from_template('local_catalog/course_list', $data);
+}
+
+?>

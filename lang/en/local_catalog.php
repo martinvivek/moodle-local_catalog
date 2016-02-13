@@ -28,6 +28,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 $string['pluginname']  = 'Course Catalog';
+$string['coursecatalog'] = "Course Catalog";
 $string['catalogsetup'] = "Catalog Setup";
 //Setup
 $string['metadatasetup'] = "Set Up Metadata Categories";
