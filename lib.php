@@ -57,8 +57,8 @@ function local_catalog_get_course_tiles($section_id){
 	global $OUTPUT;
 	global $CFG;
 	$courses = local_catalog_get_section_courses($section_id);
-	$cols = 4;
-	if(count($courses)%3==0)$cols=3;
+	$cols = 3;
+	if(count($courses)%3==0)$cols=4;
 	if(count($courses)==5)$cols = 4;
 	if(count($courses)==2||count($courses)==4)$cols = 6;
 
