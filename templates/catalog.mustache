@@ -1,0 +1,9 @@
+{{{header}}}
+<h1>{{#str}}coursecatalog, local_catalog{{/str}}</h1>
+{{#section}}
+	<h2 class="text-center"><a href="{{{wwwroot}}}/local/catalog/section.php?id={{id}}">{{name}}{{#tagline}}: {{.}}{{/tagline}}</a></h2>
+	{{{courses}}}
+	{{^last}}<hr/>{{/last}}
+{{/section}}
+
+{{{footer}}}

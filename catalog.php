@@ -40,15 +40,26 @@ $PAGE->set_pagelayout('standard');
 $data = new stdClass();
 $data->url = new moodle_url($returnurl);
 $data->wwwroot = $CFG->wwwroot;
-$PAGE->set_title($detail['name']);
-$PAGE->navbar->add($detail['name'], new moodle_url('/local/catalog/section.php', array('id'=>$id)), global_navigation::TYPE_CUSTOM);
+$PAGE->set_title(get_string('coursecatalog','local_catalog'));
+$PAGE->navbar->add(get_string('coursecatalog','local_catalog'), new moodle_url('/local/catalog/catalog.php'), global_navigation::TYPE_CUSTOM);
 $data->header = $OUTPUT->header();
-$data->heading =  $OUTPUT->heading($detail['name']);
+$data->heading =  $OUTPUT->heading(get_string('coursecatalog','local_catalog'));
 $data->footer = $OUTPUT->footer();
 
+$sections = local_catalog_get_sections();
 
-$data->courses = local_catalog_get_course_tiles($id);
+$i=0;
+foreach($sections as $s){
+	if($s['enabled']==0)continue;
+	$data->section[$i]['name'] = $s['name'];
+	if(strlen($s['tagline'])>0)$data->section[$i]['tagline'] = $s['tagline'];
+	$data->section[$i]['id'] = $s['id'];
+	$data->section[$i]['courses'] = local_catalog_get_course_tiles($s['id']);
+	$i++;
+}
 
-echo $OUTPUT->render_from_template('local_catalog/section', $data);
+$data->section[count($data->section)-1]['last'] = true;
+
+echo $OUTPUT->render_from_template('local_catalog/catalog', $data);
 
 ?>

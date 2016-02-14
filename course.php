@@ -45,6 +45,12 @@ $data->url = new moodle_url($returnurl);
 $data->wwwroot = $CFG->wwwroot;
 $PAGE->set_title($detail['name']);
 $PAGE->navbar->add(get_string('coursecatalog','local_catalog'), new moodle_url('/local/catalog/catalog.php'), global_navigation::TYPE_CUSTOM);
+$referral_section = optional_param('ref',0,PARAM_INT);
+if($referral_section!=0){
+	$ref = local_catalog_get_section_detail($referral_section);
+	$PAGE->navbar->add($ref['name'], new moodle_url('/local/catalog/section.php', array('id'=>$ref['id'])), global_navigation::TYPE_CUSTOM);
+}
+
 $PAGE->navbar->add($detail['name'], new moodle_url('/local/catalog/course.php', array('id'=>$id)), global_navigation::TYPE_CUSTOM);
 $data->header = $OUTPUT->header();
 $data->heading =  $OUTPUT->heading($detail['name']);

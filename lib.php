@@ -21,9 +21,21 @@ function local_catalog_get_courses($keytype="sequential"){
 		$i++;
 	}
 	return $entries;
-
 }
 
+function local_catalog_get_section_detail($id){
+	global $DB;
+	$e = $DB->get_record('local_catalog_sections', array('id'=>$id), '*', MUST_EXIST);
+	$section['id'] = $e->id;
+	$section['name'] = $e->name;
+	$section['tagline'] = $e->tagline;
+	$section['header'] = $e->header;
+	$section['footer'] = $e->header;
+	$section['video'] = $e->video;
+	$section['enabled'] = $e->enabled;
+	$section['sequence'] = $e->sequence;
+	return $section;
+}
 
 function local_catalog_get_section_courses($section_id){
 	global $DB;
