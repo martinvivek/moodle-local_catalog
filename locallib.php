@@ -586,24 +586,3 @@ function local_catalog_section_course_move($direction, $id, $section_id){
 	$obj->sequence = $sequence;
 	$DB->update_record('local_catalog_section_course',$obj);
 }
-
-function local_catalog_get_sections(){
-	global $DB;
-	$i=0;
-	$entries = array();
-	$entry_list = $DB->get_records('local_catalog_sections', null, 'sequence');
-	$i=0;
-	foreach($entry_list as $e){
-		$entries[$i]['id'] = $e->id;
-		$entries[$i]['name'] = $e->name;
-		$entries[$i]['tagline'] = $e->tagline;
-		$entries[$i]['header'] = $e->header;
-		$entries[$i]['footer'] = $e->header;
-		$entries[$i]['video'] = $e->video;
-		$entries[$i]['enabled'] = $e->enabled;
-		$entries[$i]['sequence'] = $e->sequence;
-		$i++;
-	}
-	return $entries;
-}
-
