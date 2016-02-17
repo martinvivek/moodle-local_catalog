@@ -174,7 +174,7 @@ class local_catalog_editcourse extends moodleform{
 
                 $mform->addElement('text', 'thumbnail', get_string('thumbnail','local_catalog'), array('style'=>'width: 100%')); // Add elements to your form
                 $mform->setType('thumbnail', PARAM_URL);                   //Set type of element
-                $mform->addRule('preview_video_id', get_string('maximumchars', '', 128), 'maxlength', 128, 'client');
+                $mform->addRule('preview_video_id', get_string('maximumchars', '', 256), 'maxlength', 256, 'client');
 
                 if (isset($data)) {
                         $this->set_data($data);

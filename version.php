@@ -25,7 +25,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-$plugin->version = 2016021101;
+$plugin->version = 2016021700;
 
 $plugin->component = 'local_catalog';  // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_ALPHA;

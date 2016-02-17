@@ -236,6 +236,20 @@ function xmldb_local_catalog_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2016021101, 'local', 'catalog');
     }
 
+    if ($oldversion < 2016021700) {
+
+        // Changing precision of field thumbnail on table local_catalog to (256).
+        $table = new xmldb_table('local_catalog');
+        $field = new xmldb_field('thumbnail', XMLDB_TYPE_CHAR, '256', null, null, null, null, 'objectives');
+
+        // Launch change of precision for field thumbnail.
+        $dbman->change_field_precision($table, $field);
+
+        // Catalog savepoint reached.
+        upgrade_plugin_savepoint(true, 2016021700, 'local', 'catalog');
+    }
+
+
 
      
     /*
