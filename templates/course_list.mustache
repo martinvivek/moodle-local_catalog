@@ -2,7 +2,10 @@
 	
 	{{#courses}}
 	 <div class="col-xs-12 col-md-{{cols}}">
-	 	{{{.}}}
+	 	{{{course}}}
 	 </div>
+	 {{#return}}
+	 	</div><div class="row">
+	 {{/return}}
 	 {{/courses}}
 </div>

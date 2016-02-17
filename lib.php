@@ -78,12 +78,14 @@ function local_catalog_get_course_tiles($section_id){
 	global $CFG;
 	$courses = local_catalog_get_section_courses($section_id);
 	$cols = 3;
-	if(count($courses)==1)$cols=12;
-	if(count($courses)%3==0)$cols=4;
-	if(count($courses)==5)$cols = 4;
-	if(count($courses)==2||count($courses)==4)$cols = 6;
+	$ret = 4;
+	if(count($courses)==1){$cols=12; $ret=1;}
+	if(count($courses)%3==0){$cols=4; $ret = 3;}
+	if(count($courses)==5){$cols = 4; $ret = 3;}
+	if(count($courses)==2||count($courses)==4){$cols = 6; $ret = 2;}
 
 	$data = new stdClass();
+	$i=0;
 	foreach($courses as $c){
 		$cd = new stdClass();
 		$cd->name = $c['name'];
@@ -91,8 +93,11 @@ function local_catalog_get_course_tiles($section_id){
 		$cd->thumbnail = $c['thumbnail'];
 		$cd->wwwroot = $CFG->wwwroot;
 		$cd->section_id = $section_id;
-		$data->courses[] = $OUTPUT->render_from_template('local_catalog/course_tile',$cd);
+		$data->courses[$i]['course'] = $OUTPUT->render_from_template('local_catalog/course_tile',$cd);
+		if(($i+1)%$ret==0)$data->courses[$i]['return'] = true;
+		$i++;
 	}
+	if(isset($data->courses[count($data->courses)-1]['return']))unset($data->courses[count($data->courses)-1]['return']);
 	$data->wwwroot = $CFG->wwwroot;
 	$data->cols = $cols;
 	return $OUTPUT->render_from_template('local_catalog/course_list', $data);
